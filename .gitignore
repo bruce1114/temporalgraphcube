@@ -30,3 +30,17 @@
 *.exe
 *.out
 *.app
+
+*.cls
+*.aux
+*.bbl
+*.blg
+*.log
+*.gz
+*.png
+*.txt
+TemporalGraphCube/TemporalGraphCube.pdf
+TemporalGraphCube/fig/example/example_tables/test.pdf
+TemporalGraphCube/fig/example/example_tables/test.tex
+TemporalGraphCube/fig/example/example_tables/test1.pdf
+TemporalGraphCube/fig/example/example_tables/test1.tex
