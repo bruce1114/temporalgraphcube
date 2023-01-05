@@ -63,7 +63,7 @@ The study of related works is insufficient, and some of the results and limitati
 \begin{Comments}
 The second parameter of MergeSnapshotExtre on Line 11, Algorithm 5 should be (u’, v’, t, a)?
 \end{Comments}
-\noindent \textbf{Response:} The parameter should remain $ (u',v',a,a) $. The reason is that edges stored in snapshots of each tree node are in form of $ () $
+\noindent \textbf{Response:} The parameter should remain $ (u',v',a,a) $. In line 11 of Algorithm 5, the algorithm inserts $ e' $ into $ treeNode.snapshot $, which is equivalent to merge two snapshots: $ treeNode.snapshot $ and a temporary snapshot consisting of only $ e' $. However, edges in snapshot of each tree node are in form of $ (u,v,max,min) $, so we need to transform $ e' $ into $ (u',v',a,a) $, since $ a $ is both the maximum and minimum value of the numeric attribute in $ e' $. $ t $ is only used to determine whether the left child or the right child of $ treeNode $ should also be updated.
 
 
 
