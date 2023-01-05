@@ -1,0 +1,341 @@
+\documentclass{article}
+\usepackage{a4wide}
+
+\usepackage{amsthm}
+\usepackage{url}
+\newtheorem{Comments}{\textbf{Comments}}
+
+
+\title{Summary of Changes: \\Temporal Graph Cube}
+\author{Guoren~Wang,
+	Yue~Zeng,
+	Rong-Hua~Li,
+	Hongchao~Qin,
+	Xuanhua Shi,\\
+	Yubin Xia, 
+	Xuequn Shang, 
+	Liang Hong
+}
+\date{}
+
+\begin{document}
+%\Large
+\maketitle
+
+We appreciate the opportunity to revise our work, and are very grateful to the anonymous reviewers for their insightful and valuable comments. We have revised the manuscript and tried our best to address all the comments. 
+
+The main changes are summarized below.
+\begin{itemize}
+%\item  As suggested by the reviewer, we have added new experiments against alternative solutions in the revised version (see exp-5 of section 4.1). 
+
+\item test
+
+\end{itemize}
+
+The point-to-point responses are given below.
+	
+\section{Response to Reviewer \#1}
+\begin{Comments}
+The expression of motivation is not clearly. Does the limitation of static graph cube is it cannot support range queries or it only can support latest data?
+\end{Comments}
+\noindent \textbf{Response:} test
+
+\begin{Comments}
+Authors should improve their writing. Especially the punctuation makes the definitions hard to be understood.
+\end{Comments}
+\noindent \textbf{Response:} test
+
+\begin{Comments}
+Authors provide similarity of snapshots and two ratios in the Sec. 5. All of them are calculated based on the edges’ number. Why do you use similarity but not two ratios to proof the effectiveness?
+\end{Comments}
+\noindent \textbf{Response:} test
+
+\begin{Comments}
+In the experiments, authors should add an experiment of comparison with existing methods to evaluate the efficiency of their model.
+\end{Comments}
+\noindent \textbf{Response:} test
+
+\begin{Comments}
+The study of related works is insufficient, and some of the results and limitations of existing works are not discussed.
+\end{Comments}
+\noindent \textbf{Response:} test
+
+\begin{Comments}
+The second parameter of MergeSnapshotExtre on Line 11, Algorithm 5 should be (u’, v’, t, a)?
+\end{Comments}
+\noindent \textbf{Response:} The parameter should remain $ (u',v',a,a) $. The reason is that edges stored in snapshots of each tree node are in form of $ () $
+
+
+
+\section{Response to Reviewer \#1.2}
+\setcounter{Comments}{0}
+\begin{Comments}
+It would be better to move Definitions 1 and 2 to be after Definition 3, as the latter does not rely on the first two.
+\end{Comments}
+\noindent \textbf{Response: } Following your suggestion, we have moved Definitions 1, 2 to be after Definition 3.
+
+
+\begin{Comments}
+In the problem formulation, it appears that parameter $\theta$ is not required.
+\end{Comments}
+\noindent \textbf{Response: } $\theta$ is a parameter which can control the window size for each snapshot. As shown in Fig.12, we evaluate our algorithms for other window sizes on DBLP. Since the results are similar to the case of $\theta=1$, we do the experiments with $\theta$ setting to 1 month/year.
+
+In the revised version, to avoid misunderstanding, we have removed parameter $\theta$ so the window size will be set as 1 month/year.
+
+\begin{Comments}
+ Left column, Page 5, "$cd(u) \geq \mu$ and $\overline{cd}(u) < \mu$" $-->$ "$cd(u) < \mu$ and $\overline{cd}(u) \geq \mu$"
+\end{Comments}
+\noindent \textbf{Response: } Thank you very much for pointing out the negligence. We have corrected this error.
+
+
+
+\section{Response to Reviewer \#2.1}
+\setcounter{Comments}{0}
+\begin{Comments}
+As mentioned in related works, some existing works study the dense subgraphs, quasi-cliques in temporal graphs. Can they be used in finding the communities in temporal graphs? Some discussion can be given in the introduction.
+\end{Comments}
+\noindent \textbf{Response: }
+The existing algorithm for mining quasi-cliques can not be applied in temporal graphs. We can design novel algorithms for mining quasi-cliques in temporal networks. However, since the problem of mining quasi-cliques is NP-hard in static networks, the problem of mining quasi-cliques in temporal networks may be NP-hard, too.
+
+In this manuscript, we focus on the density-based clustering algorithm for temporal graphs, so our definition is relative to the algorithm of SCAN. The proposed TSCAN algorithm only needs polynomial-time to get the answer and it runs quickly in practice.
+
+We have added some additional discussion in the introduction to describe them as above. 
+
+\begin{Comments}
+It should be better to give a comparison between the result of proposed method and the ground truth if there are available datasets.
+Some potential competitors can be discussed in the paper.
+\end{Comments}
+\noindent \textbf{Response: } The available datasets do not have communities of ground truth in the temporal situation, so it is hard to compare  between the result of proposed method and the ground truth. We have tested 4 evaluation metrics in exp-1, exp-2 and exp-3 which can demonstrate the effectiveness of our proposed algorithms (see Fig.8-11). We also update new case studies which are much more interpretable to show the results of TSCAN (see Fig.13 in the revised version).
+
+
+	
+\begin{Comments}
+The formulated model contains many parameters. Several attempts may required to get an optimal setting. 
+\end{Comments}
+\noindent \textbf{Response: } Thank you for your insightful comments. In exp-3 we have done effectiveness testing with varying the parameters $\mu$, $\tau$ and $\epsilon$. In the revised version, we have added more analyses of seeking better parameters settings (see exp-4 in section 4.1).
+
+
+
+\section{Response to Reviewer \#2.2}
+\setcounter{Comments}{0}
+\begin{Comments}
+1)The article is very hard to read. I’m familiar with dynamic networks and community detection, but it took me 3 hours to understand really what the authors propose, not talking about fully understanding all the optimization strategies.
+
+2) I think that some ideas and concepts are not clear for the authors themselves, or that they should better position their work relatively to the state of the art.
+
+\end{Comments}
+\noindent \textbf{Response: } Following your suggestion, we have re-positioned some definitions and examples, so it is easier to be understood.
+
+
+\begin{Comments}
+	The authors do not seem to provide any implementation of their method. Reproducibility is now recognized a very important question in science, and, I think that in 2019, it is not possible any more to propose a complex algorithm that cannot be reproduced in a couple of hours without providing a complete code that the reviewers can test.
+\end{Comments}
+\noindent \textbf{Response: } Thanks to your insightful comments. Following your suggestion, we have uploaded the codes on Github (\url{https://github.com/VeryLargeGraph/TSCAN}).
+
+
+
+%\begin{Comments}
+%The principle of the method should be the most important thing to consider in the paper.  I do not think it makes sense to 1) propose a new approach and 2) propose a complex method to optimize it, in the same paper. We should first be convinced that the method is interesting before taking care of making it scalable.  To convince the reader that the method is interesting, it should 1)be presented clearly, 2) be tested on tasks, and compared to related algorithms.
+%\end{Comments}
+%\noindent \textbf{Response: } Thanks to your insightful comments. Let me introduce our work.
+%
+%Our goal is to identify the communities in a temporal network that are stable over time. 
+%Note that, the traditional existing community detection algorithms focus mainly on traditional graphs, thus they also cannot be directly used for detecting stable communities in temporal graphs.
+%To efficiently find the stable communities, we develop a new community detection algorithm based on the density-based graph clustering framework. We also propose several carefully-designed pruning techniques to significantly speed up the proposed algorithm.
+
+
+\begin{Comments}
+Many choices seem arbitrary, or not well supported by the practice, which might be due to a lack of knowledge of the literature. For instance:
+
+-the authors describe their method as a method for link streams, but it seems that the first step of their algorithm requires to build snapshots. There their method is a snapshot based method. Starting from a link stream makes no difference, any snapshot algorithm could require to first build snapshot of the desired duration.
+
+-The authors talk about dynamic networks, but in fact it seems that the order of snapshots makes no difference, so they could work with any multislice/multiplex network.
+
+\end{Comments}
+\noindent \textbf{Response: } Thank you for your helpful comments. I think that building snapshots make it better to describe the model and the problem definitions. In reality, we do not need to build snapshots in the progress of the algorithms. We only need to fetch the neighbors and the attached temporal information of each node (see Algorithm 1-3). Also, some existing researches [1][2] for community detection or subgraph discovery in temporal networks all build snapshots for considering the common properties of some clusters.
+
+[1] Shuai Ma, Renjun Hu, Luoshu Wang, Xuelian Lin, and Jinpeng Huai. Fast Computation of Dense Temporal Subgraphs. ICDE 2017. 
+
+[2] Ashwin Paranjape, Austin R. Benson, Jure Leskovec. Motifs in Temporal Networks. WSDM 2017.
+
+
+It is right that the order of snapshots makes no difference, so our algorithms can also work with the multislice/multiplex networks. However, the researches about mining stable communities in multislice/multiplex networks are also elusive now. %In practice, temporal networks are special cases of multislice/multiplex networks as shown in ref.[3][4].
+
+%[3]
+
+%[4]
+
+
+
+
+\begin{Comments}
+	The authors decide to use the structural similarity (without never explaining why), but the rest of the method and optimization could in fact work with any similarity measure, right ?
+\end{Comments}
+\noindent \textbf{Response: } Yes, it is. We use Eq.(1) to define the structural similarity because it measures the number of common neighbor of $u$ and $v$ (normalization by the product of number of their neighbors), same as SCAN proposed by Xu in KDD07.
+
+The computation of the structural similarity is expensive in practice, because we need to compute the set-intersection of neighbors of the considering two nodes. Besides, other similar definitions for the structural similarity all need the item of the set-intersection of neighbors of the considering two nodes, too. So, different definitions for the structural similarity make little difference to the acceleration ratio of the proposed optimized algorithms.
+
+\begin{Comments}	
+	The authors define 4 metrics to evaluate their results, but they are poorly explained, as I understand them, they are not dynamic, since they are simply defined on the multigraph of the cumulated graph. If that is well the case, why not compare the results with any community detection algorithm run on this network ?
+\end{Comments}
+\noindent \textbf{Response: } The proposed 4 metrics are motivated by separability, density, cohesiveness and clustering coefficient which are used to evaluate the communities in the static graphs, proposed by Yang in ICDM2012. We modified them a little so the temporal edges can be counted and they can be used to evaluate the communities in temporal graphs. As we all know, the community detection algorithm in static graph can not be used directly in the temporal networks, or the multigraphs either. 
+Since our work mainly focus on the density-based graph clustering, we have compared our proposed TSCAN with the modified traditional density-based graph clustering algorithm PSCAN-W (see section 4, Fig.7-10).
+
+Following your suggestions, we have given clear intuitions about the four evaluation metrics of the communities in the temporal graphs (see Table.4).
+
+
+\begin{Comments}	
+	why talk about snapshot and de-temporal graphs? I could not see a difference between the two in the text.
+\end{Comments}
+\noindent \textbf{Response: } %The $i$-th snapshot of $\mathcal G$ is a temporal subgraph ${\mathcal G}_i=(\mathcal{V}, \mathcal{E}_i)$ in which $\mathcal{E}_i$ be a set of edges that are extracted from $\mathcal E$ in the time interval $(t_i-\theta, t_i]$. 
+%For a temporal graph $\mathcal G$, its \emph{de-temporal} graph is referred to as $G=(V, E)$ by ignoring all the timestamps associated with the temporal edges. 
+Snapshot ${\mathcal G}_i$ is a temporal graph that contains all the edges in time interval $(t_i-\theta, t_i]$. \emph{De-temporal} graph $G$ of $\mathcal{G}$ is a simple graph that contains all the edges in time interval $(t_0, t_{\mathcal{T}}]$, in which same edge with different time will be existing only once. 
+
+Snapshot is a temporal graph and \emph{de-temporal} graph is a static graph.
+$G$ is a simple summarization of temporal graph $\mathcal G$. 
+Also, $G_i$  is the \emph{de-temporal} graph of snapshot $\mathcal G_i$.
+Obviously, $G = \bigcup_{t_0}^{t_{\mathcal{T}} }G_i$.
+
+\begin{Comments}
+Another point that the author should keep in mind is to try to keep their work concise when possible. Maybe some parts of it could go into an annex, so that the core of the paper becomes readable
+\end{Comments}
+\noindent \textbf{Response: }We have combined some parts together and re-positioned some algorithms and examples, so it is easier to be understood. 
+
+\begin{Comments}
+
+To finish, I think that the authors have not made great effort to compare their work (qualitatively or quantitatively) with the state of the art. They start from the premises that they" are the first to study the problem of mining stable communities in temporal graphs”. But in this paper, if I understand correctly, stable communities means that nodes cannot change communities which is rather a limit than a strength in general, since networks can change completely in different times, and giving them a unique affiliation is often misleading. But this is a point of view, stable communities can very well be useful in some contexts, however, some methods to study them already exist, such as Matias et al. 2016 (Statistical clustering of temporal networks through a dynamic stochastic block model), Gauvin et al.  2014 (Detecting the Community Structure and Activity Patterns of Temporal Networks: A Non-Negative Tensor Factorization Approach), Aynaud et al. 2011 (Multi-Step Community Detection and Hierarchical Time Segmentation in Evolving Networks), etc.
+Even without comparing to those methods, one could at least compare to a simple clustering of the “de-temporal” weighted graph.
+\end{Comments}
+\noindent \textbf{Response: } In our works, we mainly focus on detecting stable communities by density-based clustering. I have downloaded the mentioned references and they study different models of communities in the temporal graph, so our proposed algorithms are hard to compare with them.
+
+In our experiments, we have treated PSCAN-W as a baseline of a simple clustering of the weighted de-temporal graph (Figs.8-10). We transform the temporal graph into a weighted de-temporal graph (weight of each edge is the number of temporal edges in the temporal graph), and then PSCAN-W invokes the density-based graph clustering algorithm (SCAN) in the weighted de-temporal graph. 
+
+
+\begin{Comments}
+	
+some English mistakes.
+P1:in the face-to-face contact network
+In the collaboration network, each edge represents two authors, u and v, coauthored a paper at time t.
+-to identify a densely-connected community structure that are stable over time
+-Similarity, most other existing community detection algorithms
+
+some remarks.
+P3:
+-its de-temporal graph: de-temporal is not a usual name for this classic process, and you do not precise if the network is a multigraph (as it should be according to your description) or not.
+-bad reference, [18] is not using sliding windows
+
+\end{Comments}
+\noindent \textbf{Response: } Following your suggestion, we fixed those typos and re-check the manuscript again and again to reduce the typos as much as possible.
+
+\begin{Comments}
+	the concepts in the density-based graph clustering framework (SCAN): it would have been important to explain what is this algorithm, why is it interesting, what is density exact, etc. beforehand. (Dates from 2007!)
+	Is the approach comparable with Falkowski et al: Studying Community Dynamics with an Incremental Graph Mining Algorithm.
+	
+\end{Comments}
+\noindent \textbf{Response: } Thanks to your careful comments. Our work is not comparable with the work proposed by Falkowski. Most previous community detection studies on dynamic graphs aim to maintain communities that evolve over time. Unlike this goal, our work mainly focuses on detecting stable communities in the temporal network based on density-based clustering methods. There are a huge number of papers on community detection in dynamic (temporal) graphs, due to the space limit, in our initial submission, we have to ignore some of those references, and focus on surveying the references on "stable community detection" and "structural graph clustering" (SCAN).
+
+%Following your suggestion, we have explained more about the structural graph clustering algorithm (SCAN) so it is better to be understood.
+
+\begin{Comments}
+	
+	P10: Case-study: not interpretable by reader, could you find a real-life network to illustrate ?
+\end{Comments}
+\noindent \textbf{Response: } Following your suggestion, we have updated the case studies and introduced more backgrounds, so they are much more interpretable in the revised version.
+
+
+\section{Response to Reviewer \#3 }
+\setcounter{Comments}{0}
+\begin{Comments}
+Definition 5 for stable communities is problematic. Consider a (3, 3, 0.6)-stable cores $c_1$. Suppose nodes $v_1$, $v_2$ and $v_3$ are simultaneously similar to $c_1$ in snapshots $t_1$, $t_2$, and $t_3$ and nodes $v_4$, $v_5$ and $v_6$ are simultaneously similar to $c_1$ in snapshots $t_4$, $t_5$, and $t_6$. This may be the case that professor $c_1$ moves to another place and has a new group of coauthors. According to Def. 5, all nodes will be assigned to the same stable cluster. However, ($v_1$, $v_2$, $v_3$) and ($v_4$, $v_5$, $v_6$) should not be in the same stable community.
+
+\end{Comments}
+\noindent \textbf{Response: } Thanks to your insightful comments. In our manuscript, definition 5 for stable communities is a relaxed version so it might have the problem as you described. However, if we change the definition to distinguish those nodes which are clustered in different time, we will perform several more frequent pattern minings (each one need $O(C_{\mathcal{T}}^\tau)$ time) and get much more overlap clusters. Those will result in much additional computation time and new problem of choosing the overlap clusters. So, we choose this relaxed definition, results of four evaluation metrics and case studies confirm the effectiveness of our model.
+
+\begin{Comments}
+The selection of parameters $\mu$, $\tau$, and $\epsilon$ needs a further discussion: how do they influence the results and how to set them in practice.
+\end{Comments}
+\noindent \textbf{Response: } Thank you for your insightful comments. In exp-3 we have done effectiveness testings with varying the parameters $\mu$, $\tau$ and $\epsilon$. In the revised version, we have added more analyses of seeking better parameters settings (see exp-4 in section 4.1).
+
+\begin{Comments}
+	The experiments are weak, especially no formal baselines are included.
+\end{Comments}
+\noindent \textbf{Response: } Since our work mainly focuses on the density-based graph clustering, we have compared our proposed TSCAN with the modified traditional density-based graph clustering algorithm PSCAN-W (see section 4, Fig.7-10). We treat PSCAN-W as a baseline and it can be found that PSCAN-W performs worse than our proposed algorithm TSCAN in the effectiveness testings. Also, the case studies demonstrate the results of PSCAN-W and TSCAN. It can be seen that our proposed model TSCAN is much better than the baseline PSCAN-W. 
+
+
+\begin{Comments}
+ Para 2, Introduction states "Most existing community ... do not consider the temporal information of the links", how about those community detection algorithms on temporal networks, e.g. ref. [35], [36].
+\end{Comments}
+\noindent \textbf{Response: } Thank you very much for pointing out the negligence. We want to say that most traditional existing community detection do not consider the temporal information of the links. However, the problem of mining community in temporal graphs are studied in recent years. 
+
+Following your suggestions, we have changed the expressions in the introduction.
+
+
+\begin{Comments}
+The notations in the preliminaries are heavy, which makes the section a little bit hard to follow. Consider including a table to summarize these notations.
+\end{Comments}
+\noindent \textbf{Response: } Following your suggestion, we have added Table.1 to summaries the notations.
+
+\begin{Comments}
+$\mathcal{T}$ is used as both the number of timestamps (line 6, page 2) and the number of snapshots (line 59, page 2). Indeed, the transformation from timestamps to snapshots is not clear. How to select $t_i$ and can time intervals $(t_i-\theta, t_i]$ overlap?
+\end{Comments}
+\noindent \textbf{Response: } Thank you very much for pointing out the negligence. In our experiments, we choose $t_i$  to be an arithmetic progression so each $t_i$ could represent different month/year. 
+For a given time interval $\theta$, a snapshot is a temporal subgraph generated in a $\theta$-length sliding window. %In the experiments, we set $\theta$ to a default value of 1 month/year which means that every snapshot contains all the temporal edges in a one month/year length sliding window.
+If $\theta=1$, $(t_i-\theta, t_i]$ would not overlap. Else if If $\theta>1$, $(t_i-\theta, t_i]$ would overlap. 
+
+As shown in Fig.12 of the last version, we evaluate our algorithms for other window sizes on DBLP. Since the results are similar to the case of $\theta=1$, we do the following experiments with $\theta$ setting to 1 month/year.
+
+In the revised version, to avoid misunderstanding, we removed all the parameter $\theta$ so $(t_i-\theta, t_i]$ will be the time interval.
+
+\begin{Comments}
+The statement "Since only one edge is different for any two consecutive snapshots" (line 49, page 4) is not straightforward. How about the case in Fig.2 that multiple edges are associated with the same timestamps. As a result, the incremental maintenance in line 19 of Algorithm 1 is also not clear.
+\end{Comments}
+\noindent \textbf{Response: } Thanks to your careful comments. Due to the limitation of space, we omit some descriptions. Clearly, $|N_i(u)|$ and $|N_i(v)|$ are easy to get and they can be stored as constants in the structure of the temporal network(similar to adjacency list in the static graph). In the revised version, we use $hashset$ to compute the $|N_i(u) \cap N_i(v)|$ so it only needs time of $O(m)$. 
+
+
+\begin{Comments}
+ typos
+ 
+a) line 11 page 1: stable community $-->$ stable communities
+
+b) line 40, page 1: Similarity $-->$ Similarly
+
+c) line 44, page 1: that are stable over $-->$ that is stable over
+
+d) line 18, page 2: get exact stable core $-->$ cores
+
+e) line 25, page 3: $(\mu, \tau, \epsilon)$-stable u $-->$ $(\mu, \tau, \epsilon)$-stable core u
+
+f) equation in line 51, page 8: $(u, v)\in \mathcal{E}$ $-->$ $(u, v, t)\in \mathcal{E}$
+
+g) line 46, page 8: StrongCore $-->$ StableCore
+
+\end{Comments}
+\noindent \textbf{Response: } Following your suggestion, we have fixed the typos in this revision.
+
+
+\section{Response to Reviewer \#4 }
+\setcounter{Comments}{0}
+\begin{Comments}
+The authors frequently misuse the sentence "statistically significant" and "significantly outperforms" while comparing the results of their algorithm with its competitors. No statistical tests were performed (I strongly suggest to apply something like a Bonferroni-Dunn test for statistical significance).
+	
+\end{Comments}
+\noindent \textbf{Response: } Thanks to your insightful comments. We have added Bonferroni-Dunn test for effectiveness testing of the compared algorithms in the revised version (see Table.5 in exp-2 of section 4.1).
+
+
+\begin{Comments}
+The authors do not provide public links to their method (and competitors) implementation. To enhance reproducibility - and to support open science - all the code must be packaged and released at submission time. Nowadays, I feel this aspect must represent a mandatory step to allow publication of any paper that introduces a new algorithm/analysis.	
+\end{Comments}
+\noindent \textbf{Response: } Thanks to your insightful comments. Following your suggestion, we have uploaded the codes on Github (\url{https://github.com/VeryLargeGraph/TSCAN}).
+
+
+
+\begin{Comments}
+Competitor analysis. I understand the controlled testing against variations of the proposed algorithm, however, I think that external evaluation against alternative solutions could represent a plus to support this work. Among your reference - in [33] - is introduced a family of approaches called "Cross-Time Community Discovery" whose aim seems - to some extent - similar to the one of this study (i.e., identify stable communities over time). Is it possible to identify some algorithms having such rationale (even pursuing it in a different manner w.r.t. the proposed algorithm) to propose an actual comparison and discuss the different contexts of applicability?
+\end{Comments}
+\noindent \textbf{Response: } In our works, we mainly focus on detecting stable communities by density-based clustering. The works in the references mainly study different models of communities in the temporal graph. For example, in "Community Discovery in Dynamic Networks: a Survey", the "Cross-Time Community Discovery" study four situations of fixed/evolving memberships, fixed/evolving properties. As our work is based on none-attributed graph, we may compare with the works of evolving memberships, fixed properties. But the existed works are not focusing on stable communities, and the models are not density-based. So, our proposed algorithms are hard to compare with them.
+
+In our experiments, we propose PSCAN-W as a baseline algorithm. The PSCAN-W algorithm invokes the density-based graph clustering algorithm (SCAN) in the transformed weighted de-temporal graph. Our proposed model TSCAN is tested to have much better effectiveness then PSCAN-W (see Figs.8-10), and a little slower than PSCAN-W (see Figs.14). So, our proposed model can enhance SCAN into the temporal graphs to find stable communities. However, some other graph clustering/communities discovery models can motivated by us to be transformed into a stable one in temporal graph. But they may cause large increase of computing time.
+
+\end{document}
+
+
