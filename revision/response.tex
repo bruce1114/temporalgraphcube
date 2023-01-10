@@ -67,26 +67,35 @@ The second parameter of MergeSnapshotExtre on Line 11, Algorithm 5 should be (uâ
 \noindent \textbf{Response:} The parameter should remain $ (u',v',a,a) $. In line 11 of Algorithm 5, the algorithm inserts $ e' $ into $ treeNode.snapshot $, which is equivalent to merge two snapshots: $ treeNode.snapshot $ and a temporary snapshot consisting of only $ e' $. However, edges in snapshot of each tree node are in form of $ (u,v,max,min) $, so we need to transform $ e' $ into $ (u',v',a,a) $, since $ a $ is both the maximum and minimum value of the numeric attribute in $ e' $. $ t $ is only used to determine whether the left child or the right child of $ treeNode $ should also be updated.
 
 
-
-\section{Response to Reviewer \#1.2}
+\section{Response to Reviewer \#2}
 \setcounter{Comments}{0}
 \begin{Comments}
-It would be better to move Definitions 1 and 2 to be after Definition 3, as the latter does not rely on the first two.
+D1: The management of snapshots should be described with more details. According to Def. 2, the snapshot is defined with a single timestamps. It looks like that when an edge forms at timestamp t, it never disappears. How do we maintain an edge with time range from t1 to t2? Otherwise, the limitation or applicability of the proposed method should be discussed.
 \end{Comments}
-\noindent \textbf{Response: } Following your suggestion, we have moved Definitions 1, 2 to be after Definition 3.
+\noindent \textbf{Response:} test
+
+\begin{Comments}
+D2: Following D1, in current experimental datasets, DBLP and IMDB, all edges with single timestamps. I suggest adding experiments with datasets which contain edges with time ranges.
+\end{Comments}
+\noindent \textbf{Response:} test
+
+\begin{Comments}
+D3: The effectiveness of partial materialization is not verified in experiments.
+\end{Comments}
+\noindent \textbf{Response:} test
+
+\section{Response to Reviewer \#3}
+\setcounter{Comments}{0}
+\begin{Comments}
+The experimental study only tests the proposed methods in this paper. I know the temporal graph cube is a novel problem studied in this paper, thus there is no existing algorithms/methods can direct handle it. However, is it possible to adapt some existing methods on graph summarizing, or static graph cube methods to handle the temporal graph cube problem as some baselines? Through comparing with modified existing methods can better show the advantages of the proposed methods.
+\end{Comments}
+\noindent \textbf{Response:} test
 
 
 \begin{Comments}
-In the problem formulation, it appears that parameter $\theta$ is not required.
+ some minor language issues should be addressed. E.g., In line 52, left column, page 2. "a index" $ \rightarrow $ "an index"
 \end{Comments}
-\noindent \textbf{Response: } $\theta$ is a parameter which can control the window size for each snapshot. As shown in Fig.12, we evaluate our algorithms for other window sizes on DBLP. Since the results are similar to the case of $\theta=1$, we do the experiments with $\theta$ setting to 1 month/year.
-
-In the revised version, to avoid misunderstanding, we have removed parameter $\theta$ so the window size will be set as 1 month/year.
-
-\begin{Comments}
- Left column, Page 5, "$cd(u) \geq \mu$ and $\overline{cd}(u) < \mu$" $-->$ "$cd(u) < \mu$ and $\overline{cd}(u) \geq \mu$"
-\end{Comments}
-\noindent \textbf{Response: } Thank you very much for pointing out the negligence. We have corrected this error.
+\noindent \textbf{Response:} Thank you very much for pointing out the negligence. We have corrected this error.
 
 
 
