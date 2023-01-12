@@ -12,7 +12,10 @@ int main(int argc,char* argv[]){
 
     TempGCube tgcube;
     // start=clock();
-    // tgcube.init(argv[1],argv[2]);
+    tgcube.init(argv[1],argv[2]);
+    vector<vector<int> > mList={{0,1,2,3,4,5}};
+    tgcube.selectMaterialize(mList);
+    cout<<tgcube.graphList[0]
     // end=clock();
     // cerr<<"init done with "<<(end-start)*1000.0/CLOCKS_PER_SEC<<endl;
     // cerr<<"start time: "<<tgcube.graphList[0].base+1<<" end: "<<tgcube.graphList[0].end+tgcube.graphList[0].base<<endl;
