@@ -288,8 +288,8 @@ public:
     void createWithSimilarity(int theModel,int similarity);
     void selectMaterialize(vector<vector<int> >& mList);
     void partialMaterialize(int k);//k 是实例化的cuboid个数
-    vector<string> partialGreedyOld(int k);
-    vector<string> partialGreedyNew(int k);
+    vector<vector<int>> partialGreedyOld(int k);
+    vector<vector<int>> partialGreedyNew(int k);
     void recordMaterialize();
     bool isAncestor(vector<int>& attriPosList,int possibleSon);
     void buildGraphByExist(vector<int>& attriPosList,int existSon);
@@ -845,7 +845,7 @@ void TempGCube::buildIndex(int indexType){
             graphList[i].buildPreArray();
         }
     }else if(indexType==5){
-        for(int i=2;i<graphList.size();++i){//暂时跳过base view
+        for(int i=0;i<graphList.size();++i){//暂时跳过base view
             graphList[i].treeRoot=graphList[i].buildSegmentTree(graphList[i].base+1,graphList[i].base+graphList[i].end);
         }
     }
@@ -1285,13 +1285,15 @@ void TempGCube::queryWithTarget(TempGraph& targetGraph,SnapShot& ansSnapShot,boo
 
 //ans中的snapshot的边的count若是0
 int TempGCube::query(int indexType,int timel,int timer,int type,bool returnAns,vector<string>& attributes,TempGraph& ans){
-    if(materialized.find(attributes)!=materialized.end()){
-        TempGraph& targetGraph=graphList[materialized[attributes]];
+    if(attributes[0]=="name"||materialized.find(attributes)!=materialized.end()){
+        int graphid=0;
+        if(attributes[0]!="name") graphid=materialized[attributes];
+        TempGraph& targetGraph=graphList[graphid];
         ans.snapshotVec.push_back(SnapShot());
         SnapShot& ansSnapShot=ans.snapshotVec[0];
 
         queryWithTarget(targetGraph,ansSnapShot,returnAns,indexType,timel,timer,type);
-        return materialized[attributes];
+        return graphid;
     }else{
         //未被实例化
         //ans里面需自行装载vertexTabl
@@ -1541,7 +1543,7 @@ bool cuboidIsAncestor(vector<int>& son,const vector<int>& father){
     return true;
 }
 
-vector<string> TempGCube::partialGreedyNew(int k){
+vector<vector<int>> TempGCube::partialGreedyNew(int k){
     unordered_map<vector<int>,ll,hashVectorInt> cuboidSize,cuboidDeSize;//记录size，底图size
     unordered_map<vector<int>,double,hashVectorInt> cuboidP;//记录分布
 
@@ -1551,7 +1553,7 @@ vector<string> TempGCube::partialGreedyNew(int k){
     fin.open("partial_greedy_old_result.txt");
     if(fin.is_open()==false){
         cerr<<"read err"<<endl;
-        return vector<string>();
+        return vector<vector<int>>();
     }
 
     string dataline1;
@@ -1578,7 +1580,7 @@ vector<string> TempGCube::partialGreedyNew(int k){
         
     }
 
-    vector<int> sourcePos={0,1,2,3,4,5};
+    vector<int> sourcePos={-1,0,1,2,3,4,5};
     unordered_set<vector<int>,hashVectorInt> S;
     S.insert(sourcePos);
 
@@ -1632,25 +1634,20 @@ vector<string> TempGCube::partialGreedyNew(int k){
     }
 
     //print ans
-    vector<string> asString;
+    vector<vector<int>> ans;
     unordered_set<vector<int>,hashVectorInt>::iterator it=S.begin();
     while(it!=S.end()){
         const vector<int>& theans=(*it);
-        string tempString="";
-        for(int i=0;i<theans.size();++i){
-            tempString+=to_string(theans[i]);
+        if(theans[0]!=-1){
+            ans.push_back(theans);
         }
-        asString.push_back(tempString);
         it++;
     }
-    sort(asString.begin(),asString.end());
-    for(int i=0;i<asString.size();++i){
-        cout<<asString[i]<<endl;
-    }
-    return asString;
+    
+    return ans;
 }
 
-vector<string> TempGCube::partialGreedyOld(int k){
+vector<vector<int>> TempGCube::partialGreedyOld(int k){
     unordered_map<vector<int>,ll,hashVectorInt> cuboidSize,cuboidDeSize;//记录size，底图size
     unordered_map<vector<int>,double,hashVectorInt> cuboidP;//记录分布
 
@@ -1728,7 +1725,7 @@ vector<string> TempGCube::partialGreedyOld(int k){
     fin.open("partial_greedy_old_result.txt");
     if(fin.is_open()==false){
         cerr<<"read err"<<endl;
-        return vector<string>();
+        return vector<vector<int>>();
     }
 
     string dataline1;
@@ -1755,7 +1752,7 @@ vector<string> TempGCube::partialGreedyOld(int k){
         
     }
 
-    vector<int> sourcePos={0,1,2,3,4,5};
+    vector<int> sourcePos={-1,0,1,2,3,4,5};
     unordered_set<vector<int>,hashVectorInt> S;
     S.insert(sourcePos);
 
@@ -1809,22 +1806,18 @@ vector<string> TempGCube::partialGreedyOld(int k){
     }
 
     //print ans
-    vector<string> asString;
+    
+    vector<vector<int>> ans;
     unordered_set<vector<int>,hashVectorInt>::iterator it=S.begin();
     while(it!=S.end()){
         const vector<int>& theans=(*it);
-        string tempString="";
-        for(int i=0;i<theans.size();++i){
-            tempString+=to_string(theans[i]);
+        if(theans[0]!=-1){
+            ans.push_back(theans);
         }
-        asString.push_back(tempString);
         it++;
     }
-    sort(asString.begin(),asString.end());
-    for(int i=0;i<asString.size();++i){
-        cout<<asString[i]<<endl;
-    }
-    return asString;
+    
+    return ans;
 
 }
 

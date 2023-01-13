@@ -8,22 +8,22 @@ int main(int argc,char* argv[]){
         cout<<"parameter error"<<endl;
         return 1;
     }
-    timeval start,end;
+    int start,end;
     int k;
     cin>>k;
 
     TempGCube tgcube;
     // start=clock();
     tgcube.init(argv[1],argv[2]);
-    vector<vector<int> > mList={{0,1,2,3,4,5}};
-    tgcube.selectMaterialize(mList);
-    cout<<tgcube.graphList[1].size<<" ";
+    // vector<vector<int> > mList={{0,1,2,3,4,5}};
+    // tgcube.selectMaterialize(mList);
+    // cout<<tgcube.graphList[1].size<<" ";
 
-    SnapShotSum tempsnap;
-    for(int i=0;i<tgcube.graphList[1].snapshotVec.size();++i){
-        SnapShotSum::mergeSnapShot(tempsnap,tgcube.graphList[1].snapshotVec[i]);
-    }
-    cout<<tempsnap.edgePool.size()<<endl;
+    // SnapShotSum tempsnap;
+    // for(int i=0;i<tgcube.graphList[1].snapshotVec.size();++i){
+    //     SnapShotSum::mergeSnapShot(tempsnap,tgcube.graphList[1].snapshotVec[i]);
+    // }
+    // cout<<tempsnap.edgePool.size()<<endl;
     // end=clock();
     // cerr<<"init done with "<<(end-start)*1000.0/CLOCKS_PER_SEC<<endl;
     // cerr<<"start time: "<<tgcube.graphList[0].base+1<<" end: "<<tgcube.graphList[0].end+tgcube.graphList[0].base<<endl;
@@ -35,7 +35,9 @@ int main(int argc,char* argv[]){
     {
     case 1:
     {
-        
+        vector<vector<int>> res=tgcube.partialGreedyOld(k);
+        tgcube.selectMaterialize(res);
+        tgcube.buildIndex(5);
     }
     break;
     default:
@@ -62,36 +64,36 @@ int main(int argc,char* argv[]){
     //     }
     // }
     // cout<<diffcnt<<endl;
-    // vector<vector<string> > allSegs;
-    // vector<vector<int> > allIntParam;
+    vector<vector<string> > allSegs;
+    vector<vector<int> > allIntParam;
 
-    // while(true){
-    //     string attriList;
-    //     int timel,timer,type,times;
-    //     cin>>attriList;
+    while(true){
+        string attriList;
+        int timel,timer,type,times;
+        cin>>attriList;
         
-    //     if(attriList=="end") break;
-    //     allIntParam.push_back(vector<int>());
-    //     int last=allIntParam.size()-1;
-    //     allIntParam[last].resize(4);
+        if(attriList=="end") break;
+        allIntParam.push_back(vector<int>());
+        int last=allIntParam.size()-1;
+        allIntParam[last].resize(4);
 
-    //     cin>>allIntParam[last][0]>>allIntParam[last][1]>>allIntParam[last][2]>>allIntParam[last][3];
-    //     vector<string> segs;
-    //     split(attriList,segs);
-    //     allSegs.push_back(segs);
+        cin>>allIntParam[last][0]>>allIntParam[last][1]>>allIntParam[last][2]>>allIntParam[last][3];
+        vector<string> segs;
+        split(attriList,segs);
+        allSegs.push_back(segs);
 
-    // }
+    }
 
-    // //批量查询
-    // start=clock();
-    // for(int i=0;i<allSegs.size();++i){
-    //     for(int j=0;j<allIntParam[i][3];++j){
-    //         TempGraph ans;
-    //         int res=tgcube.query(0,allIntParam[i][0],allIntParam[i][1],allIntParam[i][2],allSegs[i],ans);
-    //     }
-    // }
-    // end=clock();
-    // cerr<<"time: "<<(end-start)*1000.0/CLOCKS_PER_SEC<<endl;
+    //批量查询
+    start=clock();
+    for(int i=0;i<allSegs.size();++i){
+        for(int j=0;j<allIntParam[i][3];++j){
+            TempGraph ans;
+            int res=tgcube.query(5,allIntParam[i][0],allIntParam[i][1],allIntParam[i][2],false,allSegs[i],ans);
+        }
+    }
+    end=clock();
+    cerr<<"time: "<<(end-start)*1000.0/CLOCKS_PER_SEC<<endl;
 
     return 0;
 }
