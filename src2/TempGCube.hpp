@@ -1809,7 +1809,7 @@ vector<string> TempGCube::partialGreedyOld(int k){
     }
 
     //print ans
-    vector<vector<int>> ans;
+    vector<string> asString;
     unordered_set<vector<int>,hashVectorInt>::iterator it=S.begin();
     while(it!=S.end()){
         const vector<int>& theans=(*it);
