@@ -282,6 +282,7 @@ public:
     vector<TempGraph> graphList;
     
     unordered_map<vector<string>,int,hashVectorString> materialized;
+    unordered_map<vector<int>,ll,hashVectorInt> cuboidSize,cuboidDeSize;//记录size，底图size
 
     void init(string vertexFileName,string tempGraphFileName);
     void fullMaterialize();
@@ -311,7 +312,7 @@ public:
     //querytype__0:count,1:sum,2:ave,3:max,4:min
     //indexType: 0-base,1-treearr,2-segmenttree
     //return: 0 被实例化，1 未被实例化
-    int query(int indexType,int timel,int timer,int type,bool returnAns,vector<string>& attributes,TempGraph& ans);
+    int query(int indexType,int timel,int timer,int type,bool returnAns,vector<string>& attributes,int greedyType,TempGraph& ans);
     void queryWithTarget(TempGraph& targetGraph,SnapShot& ansSnapShot,bool returnAns,int indexType,int timel,int timer,int type);
     void crossQuery(vector<string>& aAttributes,vector<string>& bAttributes,int indexType,int timel,int timer,int type,CrossBoidRes& ans);
 
@@ -1284,7 +1285,7 @@ void TempGCube::queryWithTarget(TempGraph& targetGraph,SnapShot& ansSnapShot,boo
 }
 
 //ans中的snapshot的边的count若是0
-int TempGCube::query(int indexType,int timel,int timer,int type,bool returnAns,vector<string>& attributes,TempGraph& ans){
+int TempGCube::query(int indexType,int timel,int timer,int type,bool returnAns,vector<string>& attributes,int greedyType,TempGraph& ans){
     if(attributes[0]=="name"||materialized.find(attributes)!=materialized.end()){
         int graphid=0;
         if(attributes[0]!="name") graphid=materialized[attributes];
@@ -1305,7 +1306,40 @@ int TempGCube::query(int indexType,int timel,int timer,int type,bool returnAns,v
         //找attributes的最小后代，这里就是base
         //but 为什么要找最小后代？什么最小？为何不是index最小？
         //感觉不好衡量，还好这里只能找base
-        TempGraph& materializedSon=graphList[0];
+
+        //集成关于size和desize的greedy
+        vector<int> attriPosInOri;
+        for(int i=0,j=0;i<graphList[0].vertexTabl.attriVec.size()&&j<attributes.size();++i){
+            if(attributes[j]==graphList[0].vertexTabl.attriVec[i]){
+                attriPosInOri.push_back(i);j++;
+            }
+        }
+        int materializeId=0;
+        int materializeValue;
+        if(greedyType!=0){
+            if(greedyType==1){
+                materializeValue=graphList[0].size;
+            }else if(greedyType==2){
+                materializeValue=cuboidDeSize[{-1,0,1,2,3,4,5}];
+            }
+            for(int i=1;i<graphList.size();++i){
+                if(cuboidIsAncestor(attriPosInOri,graphList[i].vertexTabl.attriPosInOri)){
+                    int thisvalue=0;
+                    if(greedyType==1){
+                        thisvalue=cuboidSize[graphList[i].vertexTabl.attriPosInOri];
+                    }else if(greedyType==2){
+                        thisvalue=cuboidDeSize[graphList[i].vertexTabl.attriPosInOri];
+                    }
+
+                    if(thisvalue<materializeValue){
+                        materializeValue=thisvalue;
+                        materializeId=i;
+                    }
+                }
+            }
+        }
+
+        TempGraph& materializedSon=graphList[materializeId];
         SnapShot biggerAns;
 
         //ave 需要特别处理
@@ -1544,13 +1578,13 @@ bool cuboidIsAncestor(vector<int>& son,const vector<int>& father){
 }
 
 vector<vector<int>> TempGCube::partialGreedyNew(int k){
-    unordered_map<vector<int>,ll,hashVectorInt> cuboidSize,cuboidDeSize;//记录size，底图size
+    // unordered_map<vector<int>,ll,hashVectorInt> cuboidSize,cuboidDeSize;//记录size，底图size
     unordered_map<vector<int>,double,hashVectorInt> cuboidP;//记录分布
 
     vector<vector<int> > cuboidList;
 
     ifstream fin;
-    fin.open("partial_greedy_old_result.txt");
+    fin.open("partial_greedy_size_desize_imdb.config");
     if(fin.is_open()==false){
         cerr<<"read err"<<endl;
         return vector<vector<int>>();
@@ -1648,7 +1682,7 @@ vector<vector<int>> TempGCube::partialGreedyNew(int k){
 }
 
 vector<vector<int>> TempGCube::partialGreedyOld(int k){
-    unordered_map<vector<int>,ll,hashVectorInt> cuboidSize,cuboidDeSize;//记录size，底图size
+    // unordered_map<vector<int>,ll,hashVectorInt> cuboidSize,cuboidDeSize;//记录size，底图size
     unordered_map<vector<int>,double,hashVectorInt> cuboidP;//记录分布
 
     // vector<pair<int,int> > cubeVertexList;
@@ -1722,7 +1756,7 @@ vector<vector<int>> TempGCube::partialGreedyOld(int k){
     vector<vector<int> > cuboidList;
 
     ifstream fin;
-    fin.open("partial_greedy_old_result.txt");
+    fin.open("partial_greedy_size_desize_imdb.config");
     if(fin.is_open()==false){
         cerr<<"read err"<<endl;
         return vector<vector<int>>();
