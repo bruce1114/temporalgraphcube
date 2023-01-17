@@ -29,10 +29,16 @@ int main(int argc,char* argv[]){
     // cerr<<"start time: "<<tgcube.graphList[0].base+1<<" end: "<<tgcube.graphList[0].end+tgcube.graphList[0].base<<endl;
     // cerr<<"vertex num: "<<tgcube.graphList[0].vertexTabl.dataList.size()<<" edge num: "<<tgcube.graphList[0].size<<endl;
 
-    int wait;
-    cin>>wait;
-    switch (wait)
+    int greedyType;
+    cin>>greedyType;
+    switch (greedyType)
     {
+    case 0:
+    {
+        tgcube.partialMaterialize(k);
+        tgcube.buildIndex(5);
+    }
+    break;
     case 1:
     {
         vector<vector<int>> res=tgcube.partialGreedyOld(k);
@@ -40,6 +46,12 @@ int main(int argc,char* argv[]){
         tgcube.buildIndex(5);
     }
     break;
+    case 2:
+    {
+        vector<vector<int>> res=tgcube.partialGreedyNew(k);
+        tgcube.selectMaterialize(res);
+        tgcube.buildIndex(5);
+    }
     default:
         break;
     }
@@ -89,7 +101,7 @@ int main(int argc,char* argv[]){
     for(int i=0;i<allSegs.size();++i){
         for(int j=0;j<allIntParam[i][3];++j){
             TempGraph ans;
-            int res=tgcube.query(5,allIntParam[i][0],allIntParam[i][1],allIntParam[i][2],false,allSegs[i],ans);
+            int res=tgcube.query(5,allIntParam[i][0],allIntParam[i][1],allIntParam[i][2],false,allSegs[i],greedyType,ans);
         }
     }
     end=clock();
