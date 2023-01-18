@@ -51,6 +51,7 @@ int main(int argc,char* argv[]){
         tgcube.selectMaterialize(res);
         tgcube.buildIndex(5);
     }
+    break;
     default:
         break;
     }
