@@ -4,17 +4,17 @@ vector<int> TempGCube::logTable=vector<int>();
 
 
 int main(int argc,char* argv[]){
-    if(argc!=3){
+    if(argc!=5){
         cout<<"parameter error"<<endl;
         return 1;
     }
     int start,end;
-    int k;
-    cin>>k;
+    int k=atoi(argv[3]);
 
     TempGCube tgcube;
     // start=clock();
     tgcube.init(argv[1],argv[2]);
+    cout<<"init done"<<endl;
     // vector<vector<int> > mList={{0,1,2,3,4,5}};
     // tgcube.selectMaterialize(mList);
     // cout<<tgcube.graphList[1].size<<" ";
@@ -29,8 +29,7 @@ int main(int argc,char* argv[]){
     // cerr<<"start time: "<<tgcube.graphList[0].base+1<<" end: "<<tgcube.graphList[0].end+tgcube.graphList[0].base<<endl;
     // cerr<<"vertex num: "<<tgcube.graphList[0].vertexTabl.dataList.size()<<" edge num: "<<tgcube.graphList[0].size<<endl;
 
-    int greedyType;
-    cin>>greedyType;
+    int greedyType=atoi(argv[4]);
     switch (greedyType)
     {
     case 0:
@@ -56,7 +55,7 @@ int main(int argc,char* argv[]){
         break;
     }
 
-
+    cout<<"materialize done"<<endl;
     // start=end;
     // vector<string> oldres,newres;
     // oldres=tgcube.partialGreedyOld(k);

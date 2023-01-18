@@ -1,11 +1,11 @@
 #ifndef TEMPGCUBE_H
 #define TEMPGCUBE_H
 
+#include<unordered_set>
+#include<unordered_map>
 #include<string>
 #include<fstream>
 #include<vector>
-#include<unordered_map>
-#include<unordered_set>
 #include<algorithm>
 #include<iostream>
 #include<sstream>
@@ -45,6 +45,19 @@ int cNumber(int m,int n){
         mn--;
     }
     return top/bot;
+}
+
+bool cuboidIsAncestor(vector<int>& son,const vector<int>& father){
+    if(son.size()>father.size()) return false;
+    int last=0;
+    for(int i=0;i<son.size();++i){
+        while(last<father.size()&&son[i]!=father[last]){
+            last++;
+        }
+        if(last==father.size()) return false;
+        last++;
+    }
+    return true;
 }
 
 struct hashVectorString{
@@ -1564,18 +1577,7 @@ void TempGraph::initFrmTempGraph(TempGraph& son,vector<int>& attriPosInSon,vecto
     //建索引（可选）
 }
 
-bool cuboidIsAncestor(vector<int>& son,const vector<int>& father){
-    if(son.size()>father.size()) return false;
-    int last=0;
-    for(int i=0;i<son.size();++i){
-        while(last<father.size()&&son[i]!=father[last]){
-            last++;
-        }
-        if(last==father.size()) return false;
-        last++;
-    }
-    return true;
-}
+
 
 vector<vector<int>> TempGCube::partialGreedyNew(int k){
     // unordered_map<vector<int>,ll,hashVectorInt> cuboidSize,cuboidDeSize;//记录size，底图size
