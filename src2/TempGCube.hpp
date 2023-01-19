@@ -859,7 +859,7 @@ void TempGCube::buildIndex(int indexType){
             graphList[i].buildPreArray();
         }
     }else if(indexType==5){
-        for(int i=0;i<graphList.size();++i){//暂时跳过base view
+        for(int i=1;i<graphList.size();++i){//暂时跳过base view
             graphList[i].treeRoot=graphList[i].buildSegmentTree(graphList[i].base+1,graphList[i].base+graphList[i].end);
         }
     }
@@ -1306,6 +1306,7 @@ int TempGCube::query(int indexType,int timel,int timer,int type,bool returnAns,v
         ans.snapshotVec.push_back(SnapShot());
         SnapShot& ansSnapShot=ans.snapshotVec[0];
 
+        if(graphid==0) indexType=0;
         queryWithTarget(targetGraph,ansSnapShot,returnAns,indexType,timel,timer,type);
         return graphid;
     }else{
@@ -1354,7 +1355,7 @@ int TempGCube::query(int indexType,int timel,int timer,int type,bool returnAns,v
 
         TempGraph& materializedSon=graphList[materializeId];
         SnapShot biggerAns;
-
+        if(materializeId==0) indexType=0;
         //ave 需要特别处理
         if(type==2) queryWithTarget(materializedSon,biggerAns,returnAns,indexType,timel,timer,1);
         else queryWithTarget(materializedSon,biggerAns,returnAns,indexType,timel,timer,type);
