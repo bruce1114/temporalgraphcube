@@ -109,15 +109,16 @@ int main(int argc,char* argv[]){
     }
 
     //批量查询
-    start=clock();
+    timeval starttime,endtime;
+    gettimeofday(&starttime,NULL);
     for(int i=0;i<allSegs.size();++i){
         for(int j=0;j<allIntParam[i][3];++j){
             TempGraph ans;
             int res=tgcube.query(5,allIntParam[i][0],allIntParam[i][1],allIntParam[i][2],false,allSegs[i],greedyType,ans);
         }
     }
-    end=clock();
-    cerr<<"time: "<<(end-start)*1000.0/CLOCKS_PER_SEC<<endl;
+    gettimeofday(&endtime,NULL);
+    cout<<"time: "<<(endtime.tv_sec-starttime.tv_sec)*1000+(endtime.tv_usec-starttime.tv_usec)/1000<<endl;
 
     return 0;
 }
