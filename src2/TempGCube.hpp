@@ -1587,7 +1587,7 @@ vector<vector<int>> TempGCube::partialGreedyNew(int k){
     vector<vector<int> > cuboidList;
 
     ifstream fin;
-    fin.open("partial_greedy_size_desize_imdb.config");
+    fin.open("../partial_greedy_size_desize_imdb.config");
     if(fin.is_open()==false){
         cerr<<"read err"<<endl;
         return vector<vector<int>>();
@@ -1759,7 +1759,7 @@ vector<vector<int>> TempGCube::partialGreedyOld(int k){
     vector<vector<int> > cuboidList;
 
     ifstream fin;
-    fin.open("partial_greedy_size_desize_imdb.config");
+    fin.open("../partial_greedy_size_desize_imdb.config");
     if(fin.is_open()==false){
         cerr<<"read err"<<endl;
         return vector<vector<int>>();
@@ -1793,7 +1793,7 @@ vector<vector<int>> TempGCube::partialGreedyOld(int k){
     unordered_set<vector<int>,hashVectorInt> S;
     S.insert(sourcePos);
 
-    k--;
+    // k--;
     while(k--){
         unordered_map<vector<int>,ll,hashVectorInt> benefit;
         for(int i=0;i<cuboidList.size();++i){
@@ -1862,7 +1862,7 @@ void TempGCube::partialMaterialize(int k){
     int sum=0;
     int attriNum=graphList[0].vertexTabl.attriNum;
     int lastLayer,cNum=0;
-    if(k>=((1<<attriNum)-1)) k=((1<<attriNum)-1)-1;//最后一层不用了
+    if(k>=((1<<attriNum)-1)) k=((1<<attriNum)-1)-1;//最后一层不用了//有问题，但达不到
     for(lastLayer=1;lastLayer<=attriNum&&sum<k;++lastLayer){
         cNum=cNumber(attriNum,lastLayer);
         sum+=cNum;
