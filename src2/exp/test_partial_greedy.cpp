@@ -12,6 +12,8 @@ int main(int argc,char* argv[]){
     int k=atoi(argv[3]);
     int startlayer=atoi(argv[4]);
 
+    cout<<argv[3]<<" "<<argv[4]<<" "<<argv[5]<<endl;
+
     TempGCube tgcube;
     // start=clock();
     tgcube.init(argv[1],argv[2]);
