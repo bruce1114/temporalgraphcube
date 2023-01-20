@@ -301,7 +301,7 @@ public:
     void fullMaterialize();
     void createWithSimilarity(int theModel,int similarity);
     void selectMaterialize(vector<vector<int> >& mList);
-    void partialMaterialize(int k);//k 是实例化的cuboid个数
+    void partialMaterialize(int k,int startlayer);//k 是实例化的cuboid个数
     vector<vector<int>> partialGreedyOld(int k);
     vector<vector<int>> partialGreedyNew(int k);
     void recordMaterialize();
@@ -1858,12 +1858,16 @@ vector<vector<int>> TempGCube::partialGreedyOld(int k){
 
 }
 
-void TempGCube::partialMaterialize(int k){
+void TempGCube::partialMaterialize(int k,int startlayer){
     int sum=0;
     int attriNum=graphList[0].vertexTabl.attriNum;
     int lastLayer,cNum=0;
-    if(k>=((1<<attriNum)-1)) k=((1<<attriNum)-1)-1;//最后一层不用了//有问题，但达不到
-    for(lastLayer=1;lastLayer<=attriNum&&sum<k;++lastLayer){
+    int prenum=0;
+    for(int i=1;i<startlayer;++i){
+        prenum+=cNumber(attriNum,i);
+    }
+    if(k>((1<<attriNum)-1-prenum)) k=((1<<attriNum)-1)-prenum;
+    for(lastLayer=startlayer;lastLayer<=attriNum&&sum<k;++lastLayer){
         cNum=cNumber(attriNum,lastLayer);
         sum+=cNum;
     }
@@ -1874,7 +1878,7 @@ void TempGCube::partialMaterialize(int k){
     vector<pair<int,int> > cubeVertexList;
     cubeVertexList.push_back(pair<int,int>(graphList[0].size,0));
 
-    for(int i=lastLayer;i>=1;--i){
+    for(int i=lastLayer;i>=startlayer;--i){
         vector<vector<int> > singleLans;
         getSameLayerCubeVertex(attriNum,i,singleLans);
         if(i==lastLayer){

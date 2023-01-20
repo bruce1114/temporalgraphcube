@@ -69,10 +69,11 @@ segslist=["1878 1880",
 "1948 2028",
 "1963 2028"]
 
-fout=open("test_greedy_input.config","w")
+fout=open("test_greedy_input_short_fair.config","w")
 repeatseglist=[]
-for i in range(6,0,-1):
-    repeat=8-i
+for i in range(3,0,-1):
+    # repeat=8-i
+    repeat=1
     temprepeatlist=[]
     for segs in segslist:
         for j in range(repeat):
