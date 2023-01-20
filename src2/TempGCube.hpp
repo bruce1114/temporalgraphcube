@@ -304,6 +304,7 @@ public:
     void partialMaterialize(int k,int startlayer);//k 是实例化的cuboid个数
     vector<vector<int>> partialGreedyOld(int k);
     vector<vector<int>> partialGreedyNew(int k);
+    vector<vector<int>> partialRandom(int k);
     void recordMaterialize();
     bool isAncestor(vector<int>& attriPosList,int possibleSon);
     void buildGraphByExist(vector<int>& attriPosList,int existSon);
@@ -1681,6 +1682,54 @@ vector<vector<int>> TempGCube::partialGreedyNew(int k){
         it++;
     }
     
+    return ans;
+}
+
+vector<vector<int>> TempGCube::partialRandom(int k){
+    vector<vector<int> > cuboidList;
+
+    ifstream fin;
+    fin.open("../partial_greedy_size_desize_imdb.config");
+    if(fin.is_open()==false){
+        cerr<<"read err"<<endl;
+        return vector<vector<int>>();
+    }
+
+    string dataline1;
+    string dataline2;
+    while(!fin.eof()){
+        getline(fin,dataline1);
+        dataline1.erase(dataline1.size()-1);
+        stringstream ss1(dataline1);
+        getline(fin,dataline2);
+        stringstream ss2(dataline2);
+
+        vector<int> attriPos;
+        ll size,deSize;
+
+        while(!ss1.eof()){
+            int val;
+            ss1>>val;
+            attriPos.push_back(val);
+        }
+        ss2>>size>>deSize;
+        cuboidSize[attriPos]=size;
+        cuboidDeSize[attriPos]=deSize;
+        cuboidList.push_back(attriPos);
+        
+    }
+
+    unordered_set<int> visit;
+    vector<vector<int>> ans;
+    for(int i=0;i<k;++i){
+        int pos=rand()%cuboidList.size();
+        if(visit.find(pos)!=visit.end()||cuboidList[pos][0]==-1){
+            i--;
+            continue;
+        }
+        visit.insert(pos);
+        ans.push_back(cuboidList[pos]);
+    }
     return ans;
 }
 
