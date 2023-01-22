@@ -1,3 +1,4 @@
+#define show_chose
 #include"../TempGCube.hpp"
 
 vector<int> TempGCube::logTable=vector<int>();

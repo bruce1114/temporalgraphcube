@@ -1331,28 +1331,37 @@ int TempGCube::query(int indexType,int timel,int timer,int type,bool returnAns,v
         }
         int materializeId=0;
         int materializeValue;
-        if(greedyType!=0){
-            if(greedyType==1){
-                materializeValue=graphList[0].size;
-            }else if(greedyType==2){
-                materializeValue=cuboidDeSize[{-1,0,1,2,3,4,5}];
-            }
-            for(int i=1;i<graphList.size();++i){
-                if(cuboidIsAncestor(attriPosInOri,graphList[i].vertexTabl.attriPosInOri)){
-                    int thisvalue=0;
-                    if(greedyType==1){
-                        thisvalue=cuboidSize[graphList[i].vertexTabl.attriPosInOri];
-                    }else if(greedyType==2){
-                        thisvalue=cuboidDeSize[graphList[i].vertexTabl.attriPosInOri];
-                    }
+        if(greedyType=1){
+            materializeValue=graphList[0].size;
+        }else if(greedyType==2){
+            materializeValue=cuboidDeSize[{-1,0,1,2,3,4,5}];
+        }else{
+            materializeValue=1;
+        }
+        for(int i=1;i<graphList.size();++i){
+            if(cuboidIsAncestor(attriPosInOri,graphList[i].vertexTabl.attriPosInOri)){
+                int thisvalue=0;
+                if(greedyType==1){
+                    thisvalue=cuboidSize[graphList[i].vertexTabl.attriPosInOri];
+                }else if(greedyType==2){
+                    thisvalue=cuboidDeSize[graphList[i].vertexTabl.attriPosInOri];
+                }
 
-                    if(thisvalue<materializeValue){
-                        materializeValue=thisvalue;
-                        materializeId=i;
-                    }
+                if(thisvalue<materializeValue){
+                    materializeValue=thisvalue;
+                    materializeId=i;
                 }
             }
         }
+
+        #ifdef show_chose
+        if(materializeId==0){
+            for(int i=0;i<attriPosInOri.size();++i){
+                cout<<attriPosInOri[i]<<" ";
+            }
+            cout<<endl;
+        }
+        #endif
 
         TempGraph& materializedSon=graphList[materializeId];
         SnapShot biggerAns;
