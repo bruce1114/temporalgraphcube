@@ -306,6 +306,7 @@ public:
     vector<vector<int>> partialGreedyNew(int k);
     vector<vector<int>> partialRandom(int k);
     void recordMaterialize();
+    void recordMaterialize(int k);
     bool isAncestor(vector<int>& attriPosList,int possibleSon);
     void buildGraphByExist(vector<int>& attriPosList,int existSon);
     bool cmp(int a,int b){
@@ -326,7 +327,7 @@ public:
     //querytype__0:count,1:sum,2:ave,3:max,4:min
     //indexType: 0-base,1-treearr,2-segmenttree
     //return: 0 被实例化，1 未被实例化
-    int query(int indexType,int timel,int timer,int type,bool returnAns,vector<string>& attributes,int greedyType,TempGraph& ans);
+    int query(int indexType,int timel,int timer,int type,bool returnAns,vector<string>& attributes,int greedyType,int k,TempGraph& ans);
     void queryWithTarget(TempGraph& targetGraph,SnapShot& ansSnapShot,bool returnAns,int indexType,int timel,int timer,int type);
     void crossQuery(vector<string>& aAttributes,vector<string>& bAttributes,int indexType,int timel,int timer,int type,CrossBoidRes& ans);
 
@@ -959,6 +960,16 @@ int TempGraph::buildSegmentTree(int timel,int timer){
 }
 
 //记录被materialize的cuboid
+void TempGCube::recordMaterialize(int k){
+    int limit=graphList.size();
+    #ifdef partial14
+    limit=k+1;
+    #endif
+    for(int i=0;i<limit;++i){
+        materialized[graphList[i].vertexTabl.attriVec]=i;
+    }
+}
+
 void TempGCube::recordMaterialize(){
     for(int i=0;i<graphList.size();++i){
         materialized[graphList[i].vertexTabl.attriVec]=i;
@@ -1299,7 +1310,7 @@ void TempGCube::queryWithTarget(TempGraph& targetGraph,SnapShot& ansSnapShot,boo
 }
 
 //ans中的snapshot的边的count若是0
-int TempGCube::query(int indexType,int timel,int timer,int type,bool returnAns,vector<string>& attributes,int greedyType,TempGraph& ans){
+int TempGCube::query(int indexType,int timel,int timer,int type,bool returnAns,vector<string>& attributes,int greedyType,int k,TempGraph& ans){
     if(attributes[0]=="name"||materialized.find(attributes)!=materialized.end()){
         int graphid=0;
         if(attributes[0]!="name") graphid=materialized[attributes];
@@ -1338,7 +1349,11 @@ int TempGCube::query(int indexType,int timel,int timer,int type,bool returnAns,v
         }else{
             materializeValue=1;
         }
-        for(int i=1;i<graphList.size();++i){
+        int limit=graphList.size();
+        #ifdef partial14
+        limit=k+1;
+        #endif
+        for(int i=1;i<limit;++i){
             if(cuboidIsAncestor(attriPosInOri,graphList[i].vertexTabl.attriPosInOri)){
                 int thisvalue=0;
                 if(greedyType==1){
@@ -1959,7 +1974,7 @@ void TempGCube::partialMaterialize(int k,int startlayer){
         sort(cubeVertexList.begin()+start,cubeVertexList.end(),greater<pair<int,int> >());//为了下一排的cube找size最小的son
     }
 
-    recordMaterialize();
+    recordMaterialize(k);
 }
 
 void TempGCube::selectMaterialize(vector<vector<int> >& mList){

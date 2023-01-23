@@ -1,4 +1,5 @@
-#define show_chose
+// #define show_chose
+#define partial14
 #include"../TempGCube.hpp"
 
 vector<int> TempGCube::logTable=vector<int>();
@@ -38,7 +39,12 @@ int main(int argc,char* argv[]){
     {
     case 0:
     {
+        #ifdef partial14
+        tgcube.partialMaterialize(14,startlayer);
+        #endif
+        #ifndef partial14
         tgcube.partialMaterialize(k,startlayer);
+        #endif
         for(int i=1;i<tgcube.graphList.size();++i){
             for(int j=0;j<tgcube.graphList[i].vertexTabl.attriPosInOri.size();++j){
                 cout<<tgcube.graphList[i].vertexTabl.attriPosInOri[j]<<" ";
@@ -137,7 +143,7 @@ int main(int argc,char* argv[]){
     for(int i=0;i<allSegs.size();++i){
         for(int j=0;j<allIntParam[i][3];++j){
             TempGraph ans;
-            int res=tgcube.query(5,allIntParam[i][0],allIntParam[i][1],allIntParam[i][2],false,allSegs[i],greedyType,ans);
+            int res=tgcube.query(5,allIntParam[i][0],allIntParam[i][1],allIntParam[i][2],false,allSegs[i],greedyType,k,ans);
         }
     }
     gettimeofday(&endtime,NULL);
