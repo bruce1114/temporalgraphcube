@@ -105,3 +105,171 @@ init done
 1 3 4 5 
 materialize done
 time: 24082
+10 4 0
+init done
+0 3 4 5 
+0 2 4 5 
+0 2 3 5 
+0 2 3 4 
+0 1 4 5 
+0 1 3 5 
+0 1 3 4 
+0 1 2 5 
+0 1 2 4 
+0 1 2 3 
+materialize done
+time: 17802
+12 4 0
+init done
+1 2 3 5 
+1 2 3 4 
+0 3 4 5 
+0 2 4 5 
+0 2 3 5 
+0 2 3 4 
+0 1 4 5 
+0 1 3 5 
+0 1 3 4 
+0 1 2 5 
+0 1 2 4 
+0 1 2 3 
+materialize done
+time: 5195
+14 4 0
+init done
+1 3 4 5 
+1 2 4 5 
+1 2 3 5 
+1 2 3 4 
+0 3 4 5 
+0 2 4 5 
+0 2 3 5 
+0 2 3 4 
+0 1 4 5 
+0 1 3 5 
+0 1 3 4 
+0 1 2 5 
+0 1 2 4 
+0 1 2 3 
+materialize done
+time: 4236
+10 4 3
+init done
+3 
+2 4 
+1 5 
+0 4 5 
+2 3 4 
+1 4 5 
+0 1 4 
+2 3 4 5 
+1 3 4 5 
+0 1 4 5 
+materialize done
+time: 318483
+14 4 3
+init done
+3 
+4 
+2 4 
+1 5 
+0 4 5 
+2 3 4 
+1 4 5 
+0 1 4 
+0 3 5 
+2 3 4 5 
+1 3 4 5 
+0 1 4 5 
+0 1 2 4 
+0 1 2 3 
+materialize done
+time: 81405
+6 2 0
+init done
+1 2 
+0 5 
+0 4 
+0 3 
+0 2 
+0 1 
+materialize done
+time: 343044
+6 3 0
+init done
+0 2 4 
+0 2 3 
+0 1 5 
+0 1 4 
+0 1 3 
+0 1 2 
+materialize done
+time: 311992
+6 4 0
+init done
+0 1 4 5 
+0 1 3 5 
+0 1 3 4 
+0 1 2 5 
+0 1 2 4 
+0 1 2 3 
+materialize done
+time: 78259
+8 2 0
+init done
+1 4 
+1 3 
+1 2 
+0 5 
+0 4 
+0 3 
+0 2 
+0 1 
+materialize done
+time: 283391
+8 3 0
+init done
+0 3 4 
+0 2 5 
+0 2 4 
+0 2 3 
+0 1 5 
+0 1 4 
+0 1 3 
+0 1 2 
+materialize done
+time: 234677
+12 2 0
+init done
+2 5 
+2 4 
+2 3 
+1 5 
+1 4 
+1 3 
+1 2 
+0 5 
+0 4 
+0 3 
+0 2 
+0 1 
+materialize done
+time: 271687
+14 2 0
+init done
+3 5 
+3 4 
+2 5 
+2 4 
+2 3 
+1 5 
+1 4 
+1 3 
+1 2 
+0 5 
+0 4 
+0 3 
+0 2 
+0 1 
+materialize done
+time: 263062

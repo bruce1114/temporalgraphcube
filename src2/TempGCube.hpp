@@ -28,6 +28,10 @@ void split(string victim,vector<string>& holder){
     holder.push_back(string(victim.substr(last,victim.size()-last)));
 }
 
+bool cmpvecint(vector<int>& a,vector<int>& b){
+    return a.size()<b.size();
+}
+
 int lowerbit(int x){
     return x&(-x);
 }
@@ -309,6 +313,7 @@ public:
     void recordMaterialize(int k);
     bool isAncestor(vector<int>& attriPosList,int possibleSon);
     void buildGraphByExist(vector<int>& attriPosList,int existSon);
+    void buildGraphByExist(vector<int>& attriPosList,int existSon,int putpos);
     bool cmp(int a,int b){
         return graphList[a].size>graphList[b].size;
     }
@@ -1527,6 +1532,30 @@ bool TempGCube::isAncestor(vector<int>& attriPosList,int possibleSon){
     return true;
 }
 
+void TempGCube::buildGraphByExist(vector<int>& attriPosList,int existSon,int putpos){
+    // graphList.push_back(TempGraph());
+
+    vector<string>& overallAttriArr=graphList[0].vertexTabl.attriVec;
+
+    TempGraph& son=graphList[existSon];//用于生成当前图的后继
+    vector<int> attriPosInSon;//选中属性在son graph的属性表中的下标列表
+    int last=0;//last<son.vertexTabl.attrinum
+    for(int i=0;i<attriPosList.size();++i){
+        while(last<son.vertexTabl.attriNum){
+            if(son.vertexTabl.attriVec[last]==overallAttriArr[attriPosList[i]]){
+                attriPosInSon.push_back(last);
+                last++;
+                break;
+            }
+            last++;
+        }
+    }
+
+    TempGraph& newGraph=graphList[putpos];
+    newGraph.initFrmTempGraph(son,attriPosInSon,attriPosList);
+    
+}
+
 void TempGCube::buildGraphByExist(vector<int>& attriPosList,int existSon){
     graphList.push_back(TempGraph());
     vector<string>& overallAttriArr=graphList[0].vertexTabl.attriVec;
@@ -1754,6 +1783,9 @@ vector<vector<int>> TempGCube::partialRandom(int k){
         visit.insert(pos);
         ans.push_back(cuboidList[pos]);
     }
+    #ifdef reorder_random
+    sort(ans.begin(),ans.end(),cmpvecint);
+    #endif
     return ans;
 }
 
@@ -1951,6 +1983,11 @@ void TempGCube::partialMaterialize(int k,int startlayer){
     vector<pair<int,int> > cubeVertexList;
     cubeVertexList.push_back(pair<int,int>(graphList[0].size,0));
 
+    #ifdef reorder_partial
+    graphList.resize(k+1);
+    int putpos=k;
+    #endif
+
     for(int i=lastLayer;i>=startlayer;--i){
         vector<vector<int> > singleLans;
         getSameLayerCubeVertex(attriNum,i,singleLans);
@@ -1959,18 +1996,33 @@ void TempGCube::partialMaterialize(int k,int startlayer){
         }
         for(int j=0;j<singleLans.size();++j){
             vector<int>& curAns=singleLans[j];
-            for(k=cubeVertexList.size()-1;k>=0;--k){//必定有一个
-                if(isAncestor(curAns,cubeVertexList[k].second)){
-                    buildGraphByExist(curAns,cubeVertexList[k].second);
+            for(int l=cubeVertexList.size()-1;l>=0;--l){//必定有一个
+                if(isAncestor(curAns,cubeVertexList[l].second)){
+                    #ifdef reorder_partial
+                    buildGraphByExist(curAns,cubeVertexList[l].second,putpos--);
+                    #endif
+                    #ifndef reorder_partial
+                    buildGraphByExist(curAns,cubeVertexList[l].second);
+                    #endif
                     break;
                 }
             }
         }
 
+        
+        #ifndef reorder_partial
         int start=graphList.size()-singleLans.size();
         for(int j=start;j<graphList.size();++j){
             cubeVertexList.push_back(pair<int,int>(graphList[j].size,j));
         }
+        #endif
+        #ifdef reorder_partial
+        for(int j=putpos+1;j<=putpos+singleLans.size();++j){
+            cubeVertexList.push_back(pair<int,int>(graphList[j].size,j));
+        }
+        int start=cubeVertexList.size()-singleLans.size();
+        #endif
+
         sort(cubeVertexList.begin()+start,cubeVertexList.end(),greater<pair<int,int> >());//为了下一排的cube找size最小的son
     }
 

@@ -1,5 +1,7 @@
 // #define show_chose
-#define partial14
+// #define partial14
+#define reorder_partial
+#define reorder_random
 #include"../TempGCube.hpp"
 
 vector<int> TempGCube::logTable=vector<int>();
