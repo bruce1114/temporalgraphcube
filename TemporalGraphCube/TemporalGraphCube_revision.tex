@@ -1728,7 +1728,7 @@ In Definition~\ref{def:benefit_views}, the cost of views is used in representati
 
 As a result, the greedy algorithm and its variations are not suitable for view selection problem in temporal graph cube. In this paper, we adopt a much simpler solution to select views to be precomputed, \kw{MinLevel}, which was originally introduced in \cite{zhao2011graph}. The idea of \kw{MinLevel} is simple: users are more willing to query with small number of dimensions, i.e., $ |dim(A)| $ is small in $ Q=(A,[l,r]) $. In \kw{MinLevel}, view $ A $ where $ |dim(A)|=l_0 $ is in the first batch of views to be selected ($ l_0 $ is an empirical value). If all the views with $ l_0 $ dimensions have been selected and the number of selected views or the total size needed for precomputing the selected views has not reach the limit, then we continue to select views with $ l_0+1 $ dimensions until we select enough number or size of views. In this paper, we select $ k $ views to be precomputed and $ l_0=1 $.
 
-Using \kw{MinLevel}, we precompute views with small number of dimensions; and these views also have high similarity of snapshots in their snapshot arrays (as shown in Table~\ref{tab:materialized_view}). In processing temporal cuboid query $ Q=(A',[l,r]) $, if $ A' $ is not precomputed and $ l_0=1 $, only $ A_{base} $ can be used to process the query $ Q $. If $ l_0>1 $ and $ |dim(A')|<l_0 $, then there may be some precomputed views $ \{A_1'',A_2'',...\} $ where $ |dim(A_i'')|=l_0 $ can be used to process $ Q $. In this case, choosing an arbitrary $ A_i'' $ to process $ Q $ is efficient enough because the size of $ A_i'' $ and its index is usually small since $ l_0 $ is a small value.
+Using \kw{MinLevel}, we precompute views with small number of dimensions; and these views also have high similarity of snapshots in their snapshot arrays (as shown in Table~\ref{tab:materialized_view}). In processing temporal cuboid query $ Q=(A',[l,r]) $, if $ A' $ is not precomputed and $ l_0=1 $, only $ A_{base} $ can be used to process the query $ Q $. If $ l_0>1 $ and $ |dim(A')|<l_0 $, then there may be some precomputed views $ \{A_1'',A_2'',...\} $ where $ |dim(A_i'')|=l_0 $ can be used to process $ Q $. In this case, choosing an arbitrary $ A_i'' $ to process $ Q $ is efficient enough because the size of $ A_i'' $ and its index is usually small since $ l_0 $ is a small value.\todo{todo}
 
 \section{Experiments} \label{sec:experiment}
 %In this section, we conduct extensive experiments to evaluate the effectiveness and efficiency of the temporal graph cube model.
@@ -1839,7 +1839,7 @@ We conduct experiments on two real-world temp-multi-networks: DBLP (\url{https:/
 We refer to each person (each principal of the work) as a vertex in the temp-multi-network, and two vertices can form a temporal edge if they work together for the same work. The timestamp of the temporal edge is the release time of the work, and the numeric attribute of the temporal edge is the average rating of the work. The statistical information of temp-multi-network in IMDB is shown in Table~\ref{tab:datasets}.
 
 \subsection{Effectiveness Evaluation} \label{subsec:effectiveness_eva}
-In this section, we evaluate the effectiveness of temporal graph cube as a decision-support tool on \kw{DBLP}. First, we conduct a series of temporal cuboid queries $ Q_1=((\kw{Area}),[2001,2006]) $, $ Q_2=((\kw{Area}),[2006,2011]) $, $ Q_3=((\kw{Area}),[2011,2016]) $, $ Q_4=((\kw{Area}),[2016,2021]) $ on \kw{DBLP}. Aggregation functions upon vertices and edges are both COUNT($\ast$). The network structures of $ Q_1 $-$ Q_4 $ are shown in Fig.~\ref{fig:dblp_area}, illustrating the co-authorship patterns between authors grouped by different areas in the specified time ranges. For simplicity, in Fig.~\ref{fig:dblp_area} (a) we omit those co-authorships with COUNT($\ast$) values less than 10,000, which are also omitted in Fig.~\ref{fig:dblp_area} (b)-(d), regardless of their COUNT($\ast$) values.
+In this section, we evaluate the effectiveness of temporal graph cube as a decision-support tool on \kw{DBLP}. First, \revision{we build temporal graph cube on \kw{DBLP} and} conduct a series of temporal cuboid queries $ Q_1=((\kw{Area}),[2001,2006]) $, $ Q_2=((\kw{Area}),[2006,2011]) $, $ Q_3=((\kw{Area}),[2011,2016]) $, $ Q_4=((\kw{Area}),[2016,2021]) $. \revision{We also build static graph cube on \kw{DBLP} and conduct a cuboid query $ Q_{static}=(\kw{Area}) $}. Aggregation functions upon vertices and edges are both COUNT($\ast$). The network structures of $ Q_1 $-$ Q_4 $ \revision{and $ Q_{static} $} are shown in Fig.~\ref{fig:dblp_area}, illustrating the co-authorship patterns between authors grouped by different areas. For simplicity, in Fig.~\ref{fig:dblp_area} (a) we omit those co-authorships with COUNT($\ast$) values less than $ 10,000 $, which are also omitted in Fig.~\ref{fig:dblp_area} (b)-(e), regardless of their COUNT($\ast$) values.
 
 \comment{
 \begin{table}[t!]%\vspace*{-0.3cm}
@@ -1890,25 +1890,29 @@ In this section, we evaluate the effectiveness of temporal graph cube as a decis
 	\begin{center}
 		\begin{tabular}[t]{c}\hspace*{-0.3cm}
 			\subfigure[{\scriptsize $ Q_1 $}]{
-				\includegraphics[width=0.23\textwidth]{fig/exp/visio_area_2001_2006.pdf}
+				\includegraphics[width=0.19\textwidth]{fig/exp/visio_area_2001_2006.pdf}
 			}
 			\hspace*{-0.3cm}
 			\subfigure[{\scriptsize $ Q_2 $}]{
-				\includegraphics[width=0.23\textwidth]{fig/exp/visio_area_2006_2011.pdf}
+				\includegraphics[width=0.19\textwidth]{fig/exp/visio_area_2006_2011.pdf}
 			}
 			\hspace*{-0.3cm}
 			%\vspace*{-0.3cm}\\\hspace*{-0.3cm}
 			\subfigure[{\scriptsize $ Q_3 $}]{
-				\includegraphics[width=0.23\textwidth]{fig/exp/visio_area_2011_2016.pdf}
+				\includegraphics[width=0.19\textwidth]{fig/exp/visio_area_2011_2016.pdf}
 			}
 			\hspace*{-0.3cm}
 			\subfigure[{\scriptsize $ Q_4 $}]{
-				\includegraphics[width=0.23\textwidth]{fig/exp/visio_area_2016_2021.pdf}
+				\includegraphics[width=0.19\textwidth]{fig/exp/visio_area_2016_2021.pdf}
+			}
+			\hspace*{-0.3cm}
+			\subfigure[{\scriptsize $ Q_{static} $}]{
+				\includegraphics[width=0.19\textwidth]{fig/exp/visio_area_static.pdf}
 			}
 		\end{tabular}
 	\end{center}
 	\vspace*{-0.4cm}
-	\caption{Network structures in the results of queries $ Q_1-Q_4 $}
+	\caption{Network structures in the results of queries $ Q_1-Q_4 $ \revision{and $ Q_{static} $. $ Q_1=((\kw{Area}),[2001,2006]) $, $ Q_2=((\kw{Area}),[2006,2011]) $, $ Q_3=((\kw{Area}),[2011,2016]) $, $ Q_4=((\kw{Area}),[2016,2021]) $ are temporal cuboid queries, $ Q_{static}=(\kw{Area}) $ is a cuboid query in static graph cube}}
 	\vspace*{-0.4cm}
 	\label{fig:dblp_area}
 \end{figure*}
@@ -1918,17 +1922,17 @@ The results are shown in Table~\ref{tab:vertex_table_dblp_area} and Fig.~\ref{fi
 
 
 
-Some interesting observations can be obtained in these results. For example, authors in each area co-author most with authors in the same area even in different time ranges. We can clearly see that in recent 20 years, the number of co-authorship between each pair of areas increases over time. We can also find that in recent 20 years researchers in \kw{AI} co-authored with researchers in \kw{CG} most. This is because there are many problems in computer graphics like automatic modeling, image processing and digital photography which can be solved by AI technologies. More interestingly, in $ [2001,2006] $, researchers in \kw{TH} co-authored most with researchers in \kw{CA}, but with the time evolves, researchers in \kw{TH} are more willing to co-author with researchers in \kw{AI}. The reason may be that theoretical research on AI becomes more and more important with the wide applications of AI in recent years. %The above findings can also be obtained from uncut results.
+Some interesting observations can be obtained in these results. For example, authors in each area co-author most with authors in the same area \revision{all the time ($ Q_{static} $) and} in different time ranges \revision{($ Q_1-Q_4 $)}. We can clearly see that in recent 20 years (\revision{$ Q_1-Q_4 $}), the number of co-authorship between each pair of areas increases over time. \revision{However, such results can never be found in $ Q_{static} $}. \comment{We can also find that in recent 20 years researchers in \kw{AI} co-authored with researchers in \kw{CG} most. This is because there are many problems in computer graphics like automatic modeling, image processing and digital photography which can be solved by AI technologies.}More interestingly, in $ [2001,2006] $, researchers in \kw{TH} co-authored most with researchers in \kw{CA}, but with the time evolves, researchers in \kw{TH} are more willing to co-author with researchers in \kw{AI}. The reason may be that theoretical research on AI becomes more and more important with the wide applications of AI in recent years. \revision{However, in $ Q_{static} $ we can only know that researchers in \kw{TH} co-authored most with researchers in \kw{AI}, but ignore the trend above.} %The above findings can also be obtained from uncut results.
 %[ns and cn,ca and ai;ai and cg;th and ai,ca]
 
-In each period we can zoom into a more fine-grained view by conducting a drill-down operation. For example, for $ Q_4=((\kw{Area}),[2016,2021]) $, drill-down can be a query $ Q_4'=((\kw{Area},\kw{Productivity}),[2016,2021]) $. The network structure of $ Q_4' $ is shown in Fig.~\ref{fig:dblp_area_pro_2016_2021}.
+In each time range of temporal cuboid queries we can zoom into a more fine-grained view by conducting a drill-down operation. For example, for $ Q_4=((\kw{Area}),[2016,2021]) $, drill-down can be a query $ Q_4'=((\kw{Area},\kw{Productivity}),[2016,2021]) $. The network structure of $ Q_4' $ is shown in Fig.~\ref{fig:dblp_area_pro_2016_2021}.
 \begin{figure}
 	\begin{center}
-		\includegraphics[width=0.8\columnwidth]{fig/exp/visio_area_pro_2016_2021.pdf}
+		\includegraphics[width=0.7\columnwidth]{fig/exp/visio_area_pro_2016_2021.pdf}
 	\end{center}
 	
 	\vspace*{-0.6cm}
-	\caption{Network structure in the result of $ Q_4' $}
+	\caption{Network structure in the result of $ Q_4'=((\kw{Area},\kw{Productivity}),[2016,2021]) $}
 	\vspace*{-0.4cm}
 	\label{fig:dblp_area_pro_2016_2021}
 \end{figure}
@@ -1939,33 +1943,37 @@ We then examine the effectiveness of temporal crossboid query.
 	\begin{center}
 		\begin{tabular}[t]{c}\hspace*{-0.3cm}
 			\subfigure[{\scriptsize $ Q_{cross1} $}]{
-				\includegraphics[width=0.25\textwidth]{fig/exp/dblp_cross_name_area_2001_2006.pdf}
+				\includegraphics[width=0.19\textwidth]{fig/exp/dblp_cross_name_area_2001_2006.pdf}
 			}
 			\hspace*{-0.3cm}
 			\subfigure[{\scriptsize $ Q_{cross2} $}]{
-				\includegraphics[width=0.25\textwidth]{fig/exp/dblp_cross_name_area_2006_2011.pdf}
+				\includegraphics[width=0.19\textwidth]{fig/exp/dblp_cross_name_area_2006_2011.pdf}
 			}
 			\hspace*{-0.3cm}
 			%\vspace*{-0.3cm}\\\hspace*{-0.3cm}
 			\subfigure[{\scriptsize $ Q_{cross3} $}]{
-				\includegraphics[width=0.25\textwidth]{fig/exp/dblp_cross_name_area_2011_2016.pdf}
+				\includegraphics[width=0.19\textwidth]{fig/exp/dblp_cross_name_area_2011_2016.pdf}
 			}
 			\hspace*{-0.3cm}
 			\subfigure[{\scriptsize $ Q_{cross4} $}]{
-				\includegraphics[width=0.25\textwidth]{fig/exp/dblp_cross_name_area_2016_2021.pdf}
+				\includegraphics[width=0.19\textwidth]{fig/exp/dblp_cross_name_area_2016_2021.pdf}
+			}
+			\hspace*{-0.3cm}
+			\subfigure[{\scriptsize $ Q_{cross-static} $}]{
+				\includegraphics[width=0.19\textwidth]{fig/exp/dblp_cross_name_area_static.pdf}
 			}
 		\end{tabular}
 	\end{center}
 	\vspace*{-0.4cm}
-	\caption{Network structures in the results of $ Q_{cross1}-Q_{cross4} $}
+	\caption{Network structures in the results of $ Q_{cross1}-Q_{cross4} $ \revision{and $ Q_{cross-static} $}. \revision{$ Q_{cross1}=((\kw{Name}),(\kw{Area}),[2001,2006]) $, $ Q_{cross2}=((\kw{Name}),(\kw{Area}),[2006,2011]) $, $ Q_{cross3}=((\kw{Name}),(\kw{Area}),[2011,2016]) $, $ Q_{cross4}=((\kw{Name}),(\kw{Area}),[2016,2021]) $ are temporal crossboid queries, $ Q_{cross-static}=((\kw{Name}),(\kw{Area})) $ is a static crossboid query in static graph cube}}
 	\vspace*{-0.4cm}
 	\label{fig:dblp_cross}
 \end{figure*}
 Fig.~\ref{fig:dblp_cross} shows the results of a series of temporal crossboid queries:
 \begin{center}
-	$ Q_{cross1}=((\kw{Name}),(\kw{Area}),[2001,2006]) $,\\$ Q_{cross2}=((\kw{Name}),(\kw{Area}),[2006,2011]) $,\\$ Q_{cross3}=((\kw{Name}),(\kw{Area}),[2011,2016]) $,\\$ Q_{cross4}=((\kw{Name}),(\kw{Area}),[2016,2021]) $.
+	$ Q_{cross1}=((\kw{Name}),(\kw{Area}),[2001,2006]) $,\\$ Q_{cross2}=((\kw{Name}),(\kw{Area}),[2006,2011]) $,\\$ Q_{cross3}=((\kw{Name}),(\kw{Area}),[2011,2016]) $,\\$ Q_{cross4}=((\kw{Name}),(\kw{Area}),[2016,2021]) $,
 \end{center}
-The above queries focus on the cross interaction between \kw{Name} and \kw{Area}, i.e., the co-authorship with each area for each researcher. We further slice-and-dice the results on \kw{Name} to show the results related to ``Jiawei Han". We can find that in recent 20 years, Jiawei cooperated with researchers in \kw{DB} most. Meanwhile, in recent 10 years he has more and more cooperations with researchers in \kw{AI}, which can be ignored compared to cooperations with researchers in \kw{DB} in early 10 years.
+\revision{and a static crossboid query $ Q_{cross-static}=((\kw{Name}),(\kw{Area})) $.} Above queries focus on the cross interaction between \kw{Name} and \kw{Area}, i.e., the co-authorship with each area for each researcher. We further slice-and-dice the results on \kw{Name} to show the results related to ``Jiawei Han". We can find that in all the queries, Jiawei cooperated with researchers in \kw{DB} most. Meanwhile, in recent 10 years he has more and more cooperations with researchers in \kw{AI}, which can be ignored compared to cooperations with researchers in \kw{DB} in early 10 years. \revision{However, in static crossboid query $ Q_{cross-static} $ (Figure~\ref{fig:dblp_cross} (e)) we can only find that Jiawei cooperated with researchers in \kw{DB} most, but we ignore that the number of co-authorships between them is decreasing while Jiawei co-authored with researchers in \kw{AI} more and more frequently.}
 
 \subsection{Efficiency Evaluation} \label{subsec:efficiency_eva}
 %In this section we mainly evaluate the efficiency of temporal graph cube on \kw{IMDB}, especially the efficiency of indexes.

@@ -1318,7 +1318,12 @@ void TempGCube::queryWithTarget(TempGraph& targetGraph,SnapShot& ansSnapShot,boo
 int TempGCube::query(int indexType,int timel,int timer,int type,bool returnAns,vector<string>& attributes,int greedyType,int k,TempGraph& ans){
     if(attributes[0]=="name"||materialized.find(attributes)!=materialized.end()){
         int graphid=0;
+        #ifndef crossboid
         if(attributes[0]!="name") graphid=materialized[attributes];
+        #endif
+        #ifdef crossboid
+        graphid=materialized[attributes];
+        #endif
         TempGraph& targetGraph=graphList[graphid];
         ans.snapshotVec.push_back(SnapShot());
         SnapShot& ansSnapShot=ans.snapshotVec[0];
@@ -1446,60 +1451,60 @@ int TempGCube::query(int indexType,int timel,int timer,int type,bool returnAns,v
 void TempGCube::crossQuery(vector<string>& aAttributes,vector<string>& bAttributes,int indexType,int timel,int timer,int type,CrossBoidRes& ans){
     //暂时全注释
     // //获得ncd
-    // vector<string>& totalAttributes=graphList[0].vertexTabl.attriVec;
-    // vector<string> ncdAttributes;
-    // vector<int> aAttriPos,bAttriPos;
-    // int aIndex=0;int bIndex=0;
+    vector<string>& totalAttributes=graphList[0].vertexTabl.attriVec;
+    vector<string> ncdAttributes;
+    vector<int> aAttriPos,bAttriPos;
+    int aIndex=0;int bIndex=0;
     
-    // for(int i=0;i<totalAttributes.size();++i){
-    //     bool yes=false;
-    //     if(aIndex<aAttributes.size()&&totalAttributes[i]==aAttributes[aIndex]){
-    //         yes=true;aIndex++;
-    //         aAttriPos.push_back(ncdAttributes.size());
-    //     }
-    //     if(bIndex<bAttributes.size()&&totalAttributes[i]==bAttributes[bIndex]){
-    //         yes=true;bIndex++;
-    //         bAttriPos.push_back(ncdAttributes.size());
-    //     }
+    for(int i=0;i<totalAttributes.size();++i){
+        bool yes=false;
+        if(aIndex<aAttributes.size()&&totalAttributes[i]==aAttributes[aIndex]){
+            yes=true;aIndex++;
+            aAttriPos.push_back(ncdAttributes.size());
+        }
+        if(bIndex<bAttributes.size()&&totalAttributes[i]==bAttributes[bIndex]){
+            yes=true;bIndex++;
+            bAttriPos.push_back(ncdAttributes.size());
+        }
 
-    //     if(yes) ncdAttributes.push_back(totalAttributes[i]);
-    // }
+        if(yes) ncdAttributes.push_back(totalAttributes[i]);
+    }
 
-    // TempGraph ncdAns;
-    // int res;
-    // if(type==2) res=query(indexType,timel,timer,1,ncdAttributes,ncdAns);
-    // else res=query(indexType,timel,timer,type,ncdAttributes,ncdAns);
+    TempGraph ncdAns;
+    int res;
+    if(type==2) res=query(indexType,timel,timer,1,true,ncdAttributes,0,3,ncdAns);
+    else res=query(indexType,timel,timer,type,true,ncdAttributes,0,3,ncdAns);
 
-    // //合并成二分图
-    // SnapShot& ncdSnap=ncdAns.snapshotVec[0];
-    // VertexTabl& ncdVertexTabl=(res>=0?graphList[res].vertexTabl:ncdAns.vertexTabl);
-    // ans.aAttri=aAttributes;
-    // ans.bAttri=bAttributes;
+    //合并成二分图
+    SnapShot& ncdSnap=ncdAns.snapshotVec[0];
+    VertexTabl& ncdVertexTabl=(res>=0?graphList[res].vertexTabl:ncdAns.vertexTabl);
+    ans.aAttri=aAttributes;
+    ans.bAttri=bAttributes;
     
-    // for(int i=0;i<ncdSnap.idPairVec.size();++i){
-    //     if(ncdSnap.edgePool[i].count==0) continue;//重要
-    //     int aNcdId=ncdSnap.idPairVec[i].first;
-    //     int bNcdId=ncdSnap.idPairVec[i].second;
-    //     vector<string> aCollect,bCollect;
-    //     vector<string> aCollectRev,bCollectRev;
-    //     for(int j=0;j<aAttriPos.size();++j){
-    //         aCollect.push_back(ncdVertexTabl.dataList[aNcdId][aAttriPos[j]]);
-    //         aCollectRev.push_back(ncdVertexTabl.dataList[bNcdId][aAttriPos[j]]);
-    //     }
-    //     for(int j=0;j<bAttributes.size();++j){
-    //         bCollect.push_back(ncdVertexTabl.dataList[bNcdId][bAttriPos[j]]);
-    //         bCollectRev.push_back(ncdVertexTabl.dataList[aNcdId][bAttriPos[j]]);
-    //     }
+    for(int i=0;i<ncdSnap.idPairVec.size();++i){
+        if(ncdSnap.edgePool[i].count==0) continue;//重要
+        int aNcdId=ncdSnap.idPairVec[i].first;
+        int bNcdId=ncdSnap.idPairVec[i].second;
+        vector<string> aCollect,bCollect;
+        vector<string> aCollectRev,bCollectRev;
+        for(int j=0;j<aAttriPos.size();++j){
+            aCollect.push_back(ncdVertexTabl.dataList[aNcdId][aAttriPos[j]]);
+            aCollectRev.push_back(ncdVertexTabl.dataList[bNcdId][aAttriPos[j]]);
+        }
+        for(int j=0;j<bAttributes.size();++j){
+            bCollect.push_back(ncdVertexTabl.dataList[bNcdId][bAttriPos[j]]);
+            bCollectRev.push_back(ncdVertexTabl.dataList[aNcdId][bAttriPos[j]]);
+        }
 
-    //     ans.insert(aCollect,bCollect,ncdSnap.edgePool[i]);
-    //     ans.insert(aCollectRev,bCollectRev,ncdSnap.edgePool[i]);
-    // }
+        ans.insert(aCollect,bCollect,ncdSnap.edgePool[i]);
+        ans.insert(aCollectRev,bCollectRev,ncdSnap.edgePool[i]);
+    }
 
-    // if(type==2){//处理平均值
-    //     for(int i=0;i<ans.snap.idPairVec.size();++i){
-    //         ans.snap.edgePool[i].amount/=ans.snap.edgePool[i].count;
-    //     }
-    // }
+    if(type==2){//处理平均值
+        for(int i=0;i<ans.snap.idPairVec.size();++i){
+            ans.snap.edgePool[i].amount/=ans.snap.edgePool[i].count;
+        }
+    }
     
 }
 
