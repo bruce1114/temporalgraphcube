@@ -971,7 +971,7 @@ However, in temporal graph cube, extra time range should be specified in each qu
 	\item The size of summarized snapshot $ |S| $ is just an upper bound of the number of edges visited in $ E' $ of Algorithm~\ref{alg:temp_cuboid_baseline}. To get the accurate value of $ |E'| $ as fast as possible, we may have to build some indexes to get $ E' $ first. However, it is also difficult to get $ |E'| $ in $ O(1) $ time using indexes (we will discuss building indexes in Section~\ref{sec:indexes}).
 \end{itemize}
 
-Interestingly\todo{todo}, we can avoid the problem of choosing an ideal $ A_i'' $ by adopting the partial materialization strategy \kw{MinLevel} \cite{zhao2011graph}, which we will discuss in Section~\ref{sec:partial_materialization}.
+As a result, in this paper we choose an arbitrary $ A_i'' $ with least $ |dim(A_i'')| $ in those precomputed views.
 %
 %Let's recall the time complexity of Algorithm~\ref{alg:temp_cuboid_baseline}: $ O(|\Vr|+\sum_{i=l-t_{base}}^{r-t_{base}}|\Sr[i]|+|S|) $, where $ \Vr $ and $ \Sr[i] $ are the node set and snapshot of the inputed temp-multi-network, $ S $ is the summarized snapshot of the inputed temp-multi-network. Our goal is to get the value of time complexity of Algorithm~\ref{alg:temp_cuboid_baseline} with corresponding $ \Gr_i'' $ of each $ A_i'' $ as the inputed temp-multi-network in $ O(1) $ time and then choose the lowest time complexity and the corresponding $ \Gr_i'' $. We can not stand a higher time complexity to compute the time complexity of Algorithm~\ref{alg:temp_cuboid_baseline}, which will make the process of choosing an ideal $ \Gr_i'' $ unworthy compared to choosing a arbitrary $ \Gr_i'' $. In time complexity of Algorithm~\ref{alg:temp_cuboid_baseline}, . For our basic Algorithm~\ref{alg:temp_cuboid_baseline}, if we maintain a prefix array $ pArray $ for each precomputed $ \Gr_i'' $ of $ A_i'' $, in which
 %\begin{equation}
@@ -1726,9 +1726,9 @@ In greedy algorithm, among all candidate views, the view $ u $ with the largest 
 
 In Definition~\ref{def:benefit_views}, the cost of views is used in representation of the benefit, because the cost of views is also the time complexity or cost of queries in data cube and static graph cube. However, cost of views in temporal graph cube (space consumption of the corresponding temporal aggregate networks of views) cannot be used as the cost of temporal cuboid queries. First, in Definition~\ref{def:benefit_views}, $ C(u) $ cannot be the cost of temporal cuboid query $ Q=(w,[l,r]) $ if we conduct $ Q $ on $ u $. It is similar to $ C(v) $. The reason is that there is a specified time range $ [l,r] $ in $ Q $, which does not exist in any query of traditional data cube or static graph cube. In implementation of temporal graph cube, we know nothing about the specified time ranges in all possible queries. Second, if we use an expected range $ [l_e,r_e] $ as the representative of all ranges in all queries according to the probability distribution of specified ranges in all queries, we may be able to get the time complexity of conducting $ Q=(w,[l_e,r_e]) $ on $ u $ using the baseline method by precomputing the total size of snapshots in $ [l_e,r_e] $ and the size of summarized snapshot of snapshots in $ [l_e,r_e] $. Only in this way can we get a relatively accurate benefit for each $ u $. Third, the above precomputing process is very costly, and it is based on conducting all queries with the baseline method. %In Section~\ref{sec:effec_of_indexes} and \ref{sec:experiment}, we show the effectiveness of indexes in specific cases, so the cost of temporal cuboid queries is determined by the indexes. However, it is more costly to precompute the time complexity of conducting $ Q=(w,[l_e,r_e]) $ on $ u $ using indexes of $ u $, not to mention that timestamps will be added into temporal networks constantly, making that we cannot find a stable $ [l_e,r_e] $.
 
-As a result, the greedy algorithm and its variations are not suitable for view selection problem in temporal graph cube. In this paper, we adopt a much simpler solution to select views to be precomputed, \kw{MinLevel}, which was originally introduced in \cite{zhao2011graph}. The idea of \kw{MinLevel} is simple: users are more willing to query with small number of dimensions, i.e., $ |dim(A)| $ is small in $ Q=(A,[l,r]) $. In \kw{MinLevel}, view $ A $ where $ |dim(A)|=l_0 $ is in the first batch of views to be selected ($ l_0 $ is an empirical value). If all the views with $ l_0 $ dimensions have been selected and the number of selected views or the total size needed for precomputing the selected views has not reach the limit, then we continue to select views with $ l_0+1 $ dimensions until we select enough number or size of views. In this paper, we select $ k $ views to be precomputed and $ l_0=1 $.
+As a result, the greedy algorithm and its variations are not suitable for view selection problem in temporal graph cube. In this paper, we adopt a much simpler solution to select views to be precomputed, \kw{MinLevel}, which was originally introduced in \cite{zhao2011graph}. The idea of \kw{MinLevel} is simple: users are more willing to query with small number of dimensions, i.e., $ |dim(A)| $ is small in $ Q=(A,[l,r]) $. In \kw{MinLevel}, view $ A $ where $ |dim(A)|=l_0 $ is in the first batch of views to be selected ($ l_0 $ is an empirical value). If all the views with $ l_0 $ dimensions have been selected and the number of selected views or the total size needed for precomputing the selected views has not reach the limit, then we continue to select views with $ l_0+1 $ dimensions until we select enough number or size of views. In this paper, we select $ k $ views to be precomputed and $k$ is also an empirical value.
 
-Using \kw{MinLevel}, we precompute views with small number of dimensions; and these views also have high similarity of snapshots in their snapshot arrays (as shown in Table~\ref{tab:materialized_view}). In processing temporal cuboid query $ Q=(A',[l,r]) $, if $ A' $ is not precomputed and $ l_0=1 $, only $ A_{base} $ can be used to process the query $ Q $. If $ l_0>1 $ and $ |dim(A')|<l_0 $, then there may be some precomputed views $ \{A_1'',A_2'',...\} $ where $ |dim(A_i'')|=l_0 $ can be used to process $ Q $. In this case, choosing an arbitrary $ A_i'' $ to process $ Q $ is efficient enough because the size of $ A_i'' $ and its index is usually small since $ l_0 $ is a small value.\todo{todo}
+\comment{Using \kw{MinLevel}, we precompute views with small number of dimensions; and these views also have high similarity of snapshots in their snapshot arrays (as shown in Table~\ref{tab:materialized_view}). In processing temporal cuboid query $ Q=(A',[l,r]) $, if $ A' $ is not precomputed and $ l_0=1 $, only $ A_{base} $ can be used to process the query $ Q $. If $ l_0>1 $ and $ |dim(A')|<l_0 $, then there may be some precomputed views $ \{A_1'',A_2'',...\} $ where $ |dim(A_i'')|=l_0 $ can be used to process $ Q $. In this case, choosing an arbitrary $ A_i'' $ to process $ Q $ is efficient enough because the size of $ A_i'' $ and its index is usually small since $ l_0 $ is a small value.}
 
 \section{Experiments} \label{sec:experiment}
 %In this section, we conduct extensive experiments to evaluate the effectiveness and efficiency of the temporal graph cube model.
@@ -1978,7 +1978,7 @@ Fig.~\ref{fig:dblp_cross} shows the results of a series of temporal crossboid qu
 \subsection{Efficiency Evaluation} \label{subsec:efficiency_eva}
 %In this section we mainly evaluate the efficiency of temporal graph cube on \kw{IMDB}, especially the efficiency of indexes.
 
-\stitle{Exp-1: Performance of the index-based method.} Here we aim to evaluate how much the index-based solution can accelerate the merging operation of snapshots in time ranges while processing temporal cuboid queries, compared to the baseline algorithm (Algorithm~\ref{alg:temp_cuboid_baseline}). As we analyzed before, the average acceleration ratio of the index-based solution can vary if the similarity of snapshots in temp-multi-networks changes. In this experiment, we mainly use \kw{IMDB} dataset, since vertices in \kw{IMDB} dataset have 7 dimensions and $ 2^7 $ views can be obtained. For convenience, we only materialize views in Table~\ref{tab:materialized_view}, among which we only materialize one view containing dimension \kw{Name}, because \kw{Names} of two persons are hardly the same in \kw{IMDB}, and thus \kw{Name} can be approximately regarded as a primary key and having only one view containing dimension \kw{Name} is enough.
+\stitle{Exp-1: Performance of the index-based method.} Here we aim to evaluate how much the index-based solution can accelerate the merging operation of snapshots in time ranges while processing temporal cuboid queries, compared to the baseline algorithm (Algorithm~\ref{alg:temp_cuboid_baseline}). \revision{We will also compare other types of indexes with STree used in this paper later, such as prefix array and sparse table}. As we analyzed before, the average acceleration ratio of the index-based solution can vary if the similarity of snapshots in temp-multi-networks changes. In this experiment, we mainly use \kw{IMDB} dataset, since vertices in \kw{IMDB} dataset have 7 dimensions and $ 2^7 $ views can be obtained. For convenience, we only materialize views in Table~\ref{tab:materialized_view}, among which we only materialize one view containing dimension \kw{Name}, because \kw{Names} of two persons are hardly the same in \kw{IMDB}, and thus \kw{Name} can be approximately regarded as a primary key and having only one view containing dimension \kw{Name} is enough.
 \begin{table}[t!]%\vspace*{-0.3cm}
 	\scriptsize
 	%\small
@@ -2120,34 +2120,61 @@ We set $ f_e= $ MAX($\ast$) and use the queries in $ QS_1,\cdots,QS_7 $ to test 
 
 Table~\ref{tab:effi_index} also shows the space usage of the index-based solution (6th-8th columns). As can be seen, the size of the segment-tree based index is only several times larger than the original size of the views. For example, in the first line, the original view size is 41K, while our index-based solution takes only 94K space, with 2.27\kw{x} more space usage. Also, we can see that with $s$ increasing, the space usage of the index-based solution decreases. These results demonstrate that our segment-tree based index structure is very space-efficient when $s$ is relatively large. However, when $s$ is small, e.g., near to 1, the space overhead of our index-based solution is high. Moreover, when $s$ is near to 1, the average acceleration ratio is also near to 1 (i.e., the index-based solution is only slightly better than the baseline method). These results indicate that when $s$ is very small, there is no need to build an index.
 
+\begin{table}[t!]%\vspace*{-0.3cm}
+	\scriptsize
+	%\small
+	\centering
+	\caption{\revision{Performance of prefix array and sparse table}} \vspace*{-0.2cm} \label{tab:effi_other_index}
+	\begin{tabular}{c c c c c c}
+		\toprule
+		\makecell[c]{View\\No.}& $ s $ &\makecell[c]{acce-ratio\\preArr} &\makecell[c]{Space ratio\\preArr}&\makecell[c]{acce-ratio\\STable}&\makecell[c]{Space ratio\\STable}\cr %\hline %\hline
+		\midrule
+		1&53.48&5.37 & 1.51 &12.92 &9.38 \cr
+		\midrule
+		2&18.16&3.20 & 2.58 &7.87 &14.45 \cr
+		\midrule
+		3&6.15 &1.76 & 5.76 &5.15 &26.78 \cr
+		\midrule
+		4&6.07 &1.74 & 5.84 &5.15 &27.04 \cr
+		\midrule
+		5&4.70 &1.56 & 7.14 &4.84 &31.74 \cr
+		\midrule
+		6&3.97 &1.45 & 8.33 &4.58 &35.85 \cr
+		\midrule
+		7&1.12 &0.85 &27.38 &OM & OM \cr
+		\bottomrule
+	\end{tabular}
+	\vspace*{-0.4cm}
+\end{table}
+\revision{We also implement prefix array (preArr, only supports $ f_e= $ SUM($\ast$)) and sparse table (STable, only supports $ f_e= $ MAX($\ast$) or MIN($\ast$)) to conduct the same queries as a comparison. The results are shown in Table~\ref{tab:effi_other_index}. We can see that the acceleration ratio of prefix array is close to our solution (STree) but with more space consumption in most cases. The performance of prefix array is also influenced by similarity of snapshots, as we analyzed in Section~\ref{sec:effec_of_indexes}. The acceleration ratio of sparse table is much higher than that of prefix array and STree, but consumes much more space. Building sparse table even leads to an out-of-memory on the No. 7 view. Similarly, the performance of sparse table is also influenced by similarity of snapshots. Overall, our index-based method, STree, is the best in these three method considering both acceleration ratio and space consumption ratio.}
+
 
 \stitle{Exp-2: Updating performance of the index-based solution.} Here we evaluate the updating performance of our index-based solution. We divide all temporal edges in a materialized view into 10 batches equally according to the order of timestamps, e.g., the first batch of temporal edges are edges with the smallest timestamps, and they are added into the index one by one following the order of timestamps. When edges in a single batch are added into the index, we record both the time and space consumption of adding edges in the batch. The results are shown in Fig.~\ref{fig:index_update}. From Fig.~\ref{fig:index_update}(a), we can see that with the number of batch increasing, the time consumption of the index-updating algorithm increases. These results are consistent with our analysis in Section~\ref{subsec:segment_tree}. Moreover, we can observe that for a large $s$, the time cost of our index-updating algorithm is low, while for a small $s$, the cost is often high. The reason could be that updating STree involves copying snapshot, i.e., snapshot in root, which maintains all snapshots in snapshot array, and thus gets larger if $ s $ gets smaller. As shown in Fig.~\ref{fig:index_update}(b), the space consumption of the index-updating algorithm is linear with respect to the number of batches, indicating that our algorithm is space-efficient. Likewise, we can observe that the algorithm takes more space for a smaller $s$. These results further confirm our analysis in Section~\ref{subsec:segment_tree}.
-
 
 \begin{figure}[t!]
 	\begin{center}
 		\begin{tabular}[t]{c}\hspace*{-0.3cm}
-		%	\subfigure[{\scriptsize Prefix Array}]{
-%				\includegraphics[width=0.25\textwidth]{fig/exp/index_update/index_update_single_a.pdf}
-%			}
-%			\hspace*{-0.3cm}
-%			\subfigure[{\scriptsize STable}]{
-%				\includegraphics[width=0.25\textwidth]{fig/exp/index_update/index_update_single_b.pdf}
-%			}
-%			\hspace*{-0.3cm}
-%			%\vspace*{-0.3cm}\\\hspace*{-0.3cm}
+			%	\subfigure[{\scriptsize Prefix Array}]{
+				%				\includegraphics[width=0.25\textwidth]{fig/exp/index_update/index_update_single_a.pdf}
+				%			}
+			%			\hspace*{-0.3cm}
+			%			\subfigure[{\scriptsize STable}]{
+				%				\includegraphics[width=0.25\textwidth]{fig/exp/index_update/index_update_single_b.pdf}
+				%			}
+			%			\hspace*{-0.3cm}
+			%			%\vspace*{-0.3cm}\\\hspace*{-0.3cm}
 			\subfigure[{\scriptsize Time consumption}]{
-				\includegraphics[width=0.23\textwidth]{fig/exp/index_update/index_update_single_c.pdf}
+				\includegraphics[width=0.24\textwidth]{fig/exp/index_update/index_update_single_c.pdf}
 			}
-	%		\\
-%			\hspace*{-0.3cm}
-%			\subfigure[{\scriptsize Prefix Array}]{
-%				\includegraphics[width=0.25\textwidth]{fig/exp/index_update/index_update_single_d.pdf}
-%			}
-%			\hspace*{-0.3cm}
-%			\subfigure[{\scriptsize STable}]{
-%				\includegraphics[width=0.25\textwidth]{fig/exp/index_update/index_update_single_e.pdf}
-%			}
+			%		\\
+			%			\hspace*{-0.3cm}
+			%			\subfigure[{\scriptsize Prefix Array}]{
+				%				\includegraphics[width=0.25\textwidth]{fig/exp/index_update/index_update_single_d.pdf}
+				%			}
+			%			\hspace*{-0.3cm}
+			%			\subfigure[{\scriptsize STable}]{
+				%				\includegraphics[width=0.25\textwidth]{fig/exp/index_update/index_update_single_e.pdf}
+				%			}
 			\hspace*{-0.3cm}
 			\subfigure[{\scriptsize Space usage}]{
 				\includegraphics[width=0.23\textwidth]{fig/exp/index_update/index_update_single_f.pdf}
@@ -2156,20 +2183,29 @@ Table~\ref{tab:effi_index} also shows the space usage of the index-based solutio
 	\end{center}
 	\vspace*{-0.5cm}
 	\caption{The updating performance of the index-based solution}
-	\vspace*{-0.4cm}
+	\vspace*{-0.1cm}
 	\label{fig:index_update}
 \end{figure}
 
-
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.9\columnwidth]{fig/exp/minlevel/minlevel.pdf}
+	\end{center}
+	\vspace*{-0.6cm}
+	\caption{\revision{Performance of strategies in partial materialization. $ k $ is the number of views to be materialized}}
+	\vspace*{-0.4cm}
+	\label{fig:minlevel}
+\end{figure}
+\noindent\revision{\stitle{Exp-3: Performance of \kw{MinLevel} in partial materialization.} In this experiment we also use \kw{IMDB}. The greedy strategy introduced in Section~\ref{sec:partial_materialization} is not suitable for partial materialization in temporal graph cube due to the uncertain time range specified in queries, which we have analyzed in Section~\ref{sec:partial_materialization}. Instead, we choose a random strategy, i.e., selecting $ k $ views to be materialized randomly, as a comparison to \kw{MinLevel}. We use total response time of 40 temporal cuboid queries to evaluate the performance. In these queries, the number of queries in the format of $ ((A_1,...,A_{x}),[l,r]) $ is almost twice as many as the number of queries in the format of $ ((A_1,...,A_{x+1}),[l,r]) $, because users are more willing to query with less dimensions. The results are shown in Figure~\ref{fig:minlevel}. We can see that as $ k $ increases, all of the 4 strategies achieve better performance because more views are materialized. With proper setting of $ l_0 $, e.g., $ l_0=4 $, \kw{MinLevel} achieves the best performance since most of the queries specified by users have no more dimensions than $ 4 $, and these queries are more possible to be accelerated compared to the case when \kw{Random} strategy is used.}
 
 
 \section{Related Work} \label{sec:related_work}
 Our work extends data warehouse and OLAP techniques to temporal multidimensional networks. There are many works applying data warehouse and OLAP to other data types, such as stream data \cite{han2005stream}, spatio-temporal data \cite{gomez2009survey}, sequence data \cite{lo2008olap,liu2011cube}, and text data \cite{lin2008text}. Except the traditional relational data, Dehdouh et al. \cite{dehdouh2014columnar} tried to compute data cubes from column-oriented NoSQL data. As for graph data, except \cite{zhao2011graph}, some other works focus on heterogeneous networks \cite{yin2012hmgraph,wang2015tsmh}. \revision{\cite{wang2014pagrol,chen2020high} improve efficiency of graph OLAP query by parallelization and distribution}. However, none of them focus on temporal multidimensional networks.
 
-Our work is also related to graph summarization and analysis. For static graphs, there are some representative works, including graph compression with MDL (Minimum Description Length) principle \cite{navlakha2008graph}, attributed graph compression \cite{wu2014graph} and graph clustering based on vertices partitioning \cite{zhou2009graph}. Recently, there exist several studies on static graph summarization, such as summarizing directed acyclic graph (DAG) \cite{zhu2020top}, summarizing multi-relation graph \cite{ke2022multi} where multiple edges of different types may exist between any pair of vertices, and DPGS model \cite{zhou2021dpgs}, which can preserve properties like graph spectrum and the authorities and hubnesses of vertices while reconstructing graph. \revision{However, all of them ignore the temporal information of big graph data}. For temporal graph and dynamic graph, TimeCrunch \cite{shah2015timecrunch} summarizes a large dynamic graph with a set of important temporal structures using MDL, such as ranged full clique, periodic bipartite core, oneshot star, etc. \revision{Some works (\cite{mudannayake2021kmatrix,tang2016graph,ma2021parameter,ashrafi2021gs4,gou2019fast,chen2022scube}) summarize graph stream into one sketche. \cite{fernandes2018dynamic,tsalouchidou2018scalable} use a sliding window of fixed length to only summarize the latest snapshots, and \cite{ko2020incremental} only summarize the current snapshot of a graph stream incrementally and losslessly}. However, in this paper, we can specify arbitrary time window to query summarized result in real time. \revision{Chen et al. \cite{chen2022horae} also studies summarizing snapshots in arbitrary time window, but they ignored the attributes of vertices and different views determined by combinations of those attributes}. We summarize graphs based on selected attributes of vertices, \revision{so we can get summarized information between vertices in different resolutions.}
+Our work is also related to graph summarization and analysis. For static graphs, there are some representative works, including graph compression with MDL (Minimum Description Length) principle \cite{navlakha2008graph}, attributed graph compression \cite{wu2014graph} and graph clustering based on vertices partitioning \cite{zhou2009graph}. Recently, there exist several studies on static graph summarization, such as summarizing directed acyclic graph (DAG) \cite{zhu2020top}, summarizing multi-relation graph \cite{ke2022multi} where multiple edges of different types may exist between any pair of vertices, and DPGS model \cite{zhou2021dpgs}, which can preserve properties like graph spectrum and the authorities and hubnesses of vertices while reconstructing graph. \revision{However, all of them ignore the temporal information of big graph data}. For temporal graph and dynamic graph, TimeCrunch \cite{shah2015timecrunch} summarizes a large dynamic graph with a set of important temporal structures using MDL, such as ranged full clique, periodic bipartite core, oneshot star, etc. \revision{Some works (\cite{mudannayake2021kmatrix,tang2016graph,ma2021parameter,ashrafi2021gs4,gou2019fast,chen2022scube}) summarize graph stream into one sketche. \cite{fernandes2018dynamic,tsalouchidou2018scalable} use a sliding window of fixed length to only summarize the latest snapshots, and \cite{ko2020incremental} only summarize the current snapshot of a graph stream incrementally and losslessly}. However, in this paper, we can specify arbitrary time window to query summarized result in real time. \revision{Chen et al. \cite{chen2022horae} also study summarizing snapshots in arbitrary time window, but they ignored the attributes of vertices and different views determined by combinations of those attributes}. We summarize graphs based on selected attributes of vertices, \revision{so we can get summarized information between vertices in different resolutions.}
 
 \section{Conclusion} \label{sec:conclusion}
-In this paper, we extend data warehouse and OLAP technology to temporal multidimensional networks by proposing a new data warehouse model \kw{Temporal\enspace Graph\enspace Cube}, which provides knowledge workers with tools to analyze temporal multidimensional networks. We first extend the basic concepts in static graph cube and introduce two new queries, \kw{temporal\enspace cuboid} and \kw{temporal\enspace crossboid}, allowing \kw{Temporal\enspace Graph\enspace Cube} to support OLAP queries on temporal multidimensional networks. Then, we propose a segment-tree based index method to accelerate the OLAP queries. We also present a new metric to measure the efficiency of the index. We conduct extensive experiments on two large real-world datasets, and the results demonstrate the effectiveness and efficiency of the proposed solutions.
+In this paper, we extend data warehouse and OLAP technology to temporal multidimensional networks by proposing a new data warehouse model \kw{Temporal\enspace Graph\enspace Cube}, which provides knowledge workers with tools to analyze temporal multidimensional networks. We first extend the basic concepts in static graph cube and introduce two new queries, \kw{temporal\enspace cuboid} and \kw{temporal\enspace crossboid}, allowing \kw{Temporal\enspace Graph\enspace Cube} to support OLAP queries on temporal multidimensional networks. Then, we propose a segment-tree based index method to accelerate the OLAP queries. We also present a new metric to measure the efficiency of the index. We conduct extensive experiments on two large real-world datasets, and the results demonstrate the effectiveness and efficiency of the proposed solutions. \revision{Besides, there are other types of temporal networks which are not discussed in our work, for example, temporal networks where edges have both start and end timestamps. It is difficult to assign realistic meaning to some possible positional relationships between the interval of a temporal edge and interval specified in a query. Data warehouse and OLAP technology based on these special datasets are waiting for further discussion.}
 
 %We point out that some classical methods are no longer applicable in the implementation of \kw{Temporal\enspace Graph\enspace Cube}.
 
