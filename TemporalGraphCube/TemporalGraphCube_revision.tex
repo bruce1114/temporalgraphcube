@@ -713,7 +713,7 @@ Aggregation, or traditional group-by, is a key operation in data warehouses and 
 	\begin{enumerate}
 		\item \revision{Let $ [v] $ be an equivalence class of $ v $, where $ v \in \Vr $ and $[v]=\{u|B(u)=B(v),u \in \Vr\}$. For each $ v\in \Vr $, $ \exists v' \in \Vr'$ satisfying $v' \in [v]$ and $\nexists u' \in \Vr', u' \neq v'$ satisfying $u' \in [v]$.} $W_{\Gr'}(v')$ is the aggregation result of $W(v)$ for $v \in [v']$ obtained by aggregation function upon vertices specified by user.
 %		\item For any $S'_i$ in $\Sr'$ and each $(u',v',a')$ in $S'_i$, there exists a nonempty maximum edge set $E=\{(u,v,a)|(u,v,a) \in S_i, u \in [u'] \wedge v \in [v']\; or\; u \in [v'] \wedge v \in [u']\}$, $a'$ is the aggregation result of numeric attributes ($a$) of edges in $E$ obtained by aggregation function specified by user.
-		\item $\forall u',v' \in \Vr'$ where $u' \leq v'$ and any $\Sr[i], i \in [1,t_{end}]$, if there exists a nonempty maximum edge set $E=\{(u,v,a)|(u,v,a) \in \Sr[i],(u \in [u'] \wedge v \in [v']) \vee (u \in [v'] \wedge v \in [u']) \}$, then $ \exists (u',v',a') \in \Sr'[i] $, where $a'$ is the aggregation result of numeric attributes of edges in $E$ obtained by aggregation function upon edges specified by user.
+		\item $\forall u',v' \in \Vr'$ where $u' \leq v'$ and \revision{any $\Sr[i]$ for $ i \in [1,t_{end}]$}, if there exists a nonempty maximum edge set $E=\{(u,v,a)|(u,v,a) \in \Sr[i],(u \in [u'] \wedge v \in [v']) \vee (u \in [v'] \wedge v \in [u']) \}$, then $ \exists (u',v',a') \in \Sr'[i] $ where $a'$ is the aggregation result of numeric attributes of edges in $E$ obtained by aggregation function upon edges specified by user.
 	\end{enumerate}
 \end{definition}
 In short, conducting aggregations on temp-multi-network contains two stages: aggregating, or group-by on the vertex table as 1) in Definition~\ref{def:temp_aggregate_network} and aggregating each snapshots in the temp-multi-network as 2) in Definition~\ref{def:temp_aggregate_network}.
@@ -916,7 +916,7 @@ Algorithm~\ref{alg:temp_cuboid_baseline} is a basic algorithm to conduct tempora
 Before analyzing the time and space complexity of Algorithm~\ref{alg:temp_cuboid_baseline}, we first give a brief definition of summarized snapshot.
 \begin{definition}[Summarized Snapshot]
 	\label{def:sum_snap}
-	Given a temporal multidimensional network $\Gr=(\Vr,\Sr,A,W)$, the summarized snapshot $ S $ of $ \Gr $ is a special snapshot of $ \Gr $, which is the network structure in the result of a temporal cuboid query $ Q=(A,[1+t_{base},t_{end}+t_{base}]) $ on $ \Gr $.
+	Given a temporal multidimensional network $\Gr=(\Vr,\Sr,A,W)$, the summarized snapshot $ S $ of $ \Gr $ is a special snapshot of $ \Gr $ \revision{and it is the network structure in the result of a temporal cuboid query $ Q=(A,[1+t_{base},t_{end}+t_{base}]) $ on $ \Gr $}.
 \end{definition}
 In other words, summarized snapshot $ S $ of $ \Gr $ can be obtained by merging all snapshots in a snapshot array $ \Sr $.
 
@@ -996,7 +996,7 @@ The inputs of temporal crossboid query $ Q_{cross}=(A'_1,A'_2,[l,r]) $ in tempor
 We can conduct a temporal crossboid query directly on the original temp-multi-network. However, it is inefficient due to the large size of the original temp-multi-network. We omit the algorithm to conduct a temporal crossboid query on the original temp-multi-network, but give a more efficient way to conduct the query.
 \begin{definition}[Nearest Common Descendant]
 	\label{def:ncd}
-	Given two different views $ A_1' $ and $ A_2' $, the common descendant of $ A_1' $ and $ A_2' $, $ cd(A_1',A_2') $ is also a view in temporal graph cube, satisfying $ dim(A_1') \cup dim(A_2') \subseteq dim(cd(A_1',A_2')) $. The nearest common descendant of $ A_1' $ and $ A_2' $, $ ncd(A_1',A_2') $, is one of the common descendants satisfying $ dim(ncd(A_1',A_2'))=dim(A_1') \cup dim(A_2') $.
+	Given two different views $ A_1' $ and $ A_2' $, \revision{$ cd(A_1',A_2') $ is common descendant of $ A_1' $ and $ A_2' $ and it is also a view in temporal graph cube satisfying $ dim(A_1') \cup dim(A_2') \subseteq dim(cd(A_1',A_2')) $. $ ncd(A_1',A_2') $ is the nearest common descendant of $ A_1' $ and $ A_2' $ and it is one of the common descendants satisfying $ dim(ncd(A_1',A_2'))=dim(A_1') \cup dim(A_2') $.}
 \end{definition}
 \begin{theorem}
 	\label{thm:ans_cross_by_ncd}
@@ -1610,7 +1610,7 @@ Consider the second example in Fig.~\ref{fig:index_fail_success_example} (b), al
 The basic components in snapshot array and index built on snapshot array are edges. We use the number of visited edges as the measure of time consumption when conducting a query using the baseline method and using the index-based method in Definition~\ref{def:acceleration_ratio_index}.
 \begin{definition}[Similarity of Snapshots]
 	\label{def:similarity_snapshots}
-	Given a snapshot array $ snapArr $ starting from $ 1 $ and containing $ n $ snapshots, the summarized snapshot $ S $ of all snapshots in $ snapArr $, $ E=\sum_{i=1}^{n}|snapArr[i]| $, the similarity of snapshots in $ snapArr $ is $ s=\frac{E}{|S|} $.
+	Given a snapshot array $ snapArr $ starting from $ 1 $ and containing $ n $ snapshots. \revision{Suppose the summarized snapshot of all snapshots in $ snapArr $ is $ S $ and $ E=\sum_{i=1}^{n}|snapArr[i]| $}, the similarity of snapshots in $ snapArr $ is $ s=\frac{E}{|S|} $.
 \end{definition}
 In other words, the similarity of snapshots is the ratio of the total number of edges in snapshot array to the size of the summarized snapshot. For simplicity, we assume that each snapshot in $ snapArr $ has at least one edge. Clearly, for a snapshot array of length $ n $, similarity of snapshots $ s $ is in $ [1,n] $.
 \begin{example}
@@ -1671,7 +1671,7 @@ The similarity of snapshots also affects the space consumption of the index. Sin
 
 \begin{definition}[Space Consumption Ratio]
 	\label{def:space_consum_ratio}
-	Consider an array $ Arr $ holding numeric values or snapshots. If $ Arr $ is a snapshot array, suppose the total number of edges in $ Arr $ is $ E_a $, and the total number of edges in the index is $ E_i $. If $ Arr $ is a numeric array, $ E_a,E_i $ are the total number of numeric values in $ Arr $ and in the index respectively. The space consumption ratio of the index is $ \frac{E_i}{E_a} $.
+	Consider an array $ Arr $ holding numeric values or snapshots. If $ Arr $ is a snapshot array, suppose the total number of edges in $ Arr $ is $ E_a $ and the total number of edges in the index is $ E_i $. If $ Arr $ is a numeric array, $ E_a,E_i $ are the total number of numeric values in $ Arr $ and in the index respectively. The space consumption ratio of the index is $ \frac{E_i}{E_a} $.
 \end{definition}
 \begin{theorem}\label{thm:best_index_space_ratio}
 	For two arrays of length $ n $ and starting from 1, snapshot array $ snapArr $ and numeric array $ numArr $, if similarity of snapshots in $ snapArr $ equals $ n $, then the space consumption ratios of the same index built on the two arrays are equal.
@@ -2146,7 +2146,7 @@ Table~\ref{tab:effi_index} also shows the space usage of the index-based solutio
 	\end{tabular}
 	\vspace*{-0.4cm}
 \end{table}
-\revision{We also implement prefix array (preArr, only supports $ f_e= $ SUM($\ast$)) and sparse table (STable, only supports $ f_e= $ MAX($\ast$) or MIN($\ast$)) to conduct the same queries as a comparison. The results are shown in Table~\ref{tab:effi_other_index}. We can see that the acceleration ratio of prefix array is close to our solution (STree) but with more space consumption in most cases. The performance of prefix array is also influenced by similarity of snapshots, as we analyzed in Section~\ref{sec:effec_of_indexes}. The acceleration ratio of sparse table is much higher than that of prefix array and STree, but consumes much more space. Building sparse table even leads to an out-of-memory on the No. 7 view. Similarly, the performance of sparse table is also influenced by similarity of snapshots. Overall, our index-based method, STree, is the best in these three method\todo{methods} considering both acceleration ratio and space consumption ratio.}
+\revision{We also implement prefix array (preArr, only supports $ f_e= $ SUM($\ast$)) and sparse table (STable, only supports $ f_e= $ MAX($\ast$) or MIN($\ast$)) to conduct the same queries as a comparison. The results are shown in Table~\ref{tab:effi_other_index}. We can see that the acceleration ratio of prefix array is close to our solution (STree) but with more space consumption in most cases. The performance of prefix array is also influenced by similarity of snapshots, as we analyzed in Section~\ref{sec:effec_of_indexes}. The acceleration ratio of sparse table is much higher than that of prefix array and STree, but consumes much more space. Building sparse table even leads to an out-of-memory on the No. 7 view. Similarly, the performance of sparse table is also influenced by similarity of snapshots. Overall, our index-based method, STree, is the best in these three methods considering both acceleration ratio and space consumption ratio.}
 
 
 \stitle{Exp-2: Updating performance of the index-based solution.} Here we evaluate the updating performance of our index-based solution. We divide all temporal edges in a materialized view into 10 batches equally according to the order of timestamps, e.g., the first batch of temporal edges are edges with the smallest timestamps, and they are added into the index one by one following the order of timestamps. When edges in a single batch are added into the index, we record both the time and space consumption of adding edges in the batch. The results are shown in Fig.~\ref{fig:index_update}. From Fig.~\ref{fig:index_update}(a), we can see that with the number of batch increasing, the time consumption of the index-updating algorithm increases. These results are consistent with our analysis in Section~\ref{subsec:segment_tree}. Moreover, we can observe that for a large $s$, the time cost of our index-updating algorithm is low, while for a small $s$, the cost is often high. The reason could be that updating STree involves copying snapshot, i.e., snapshot in root, which maintains all snapshots in snapshot array, and thus gets larger if $ s $ gets smaller. As shown in Fig.~\ref{fig:index_update}(b), the space consumption of the index-updating algorithm is linear with respect to the number of batches, indicating that our algorithm is space-efficient. Likewise, we can observe that the algorithm takes more space for a smaller $s$. These results further confirm our analysis in Section~\ref{subsec:segment_tree}.

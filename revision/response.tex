@@ -28,7 +28,10 @@ The main changes are summarized below.
 \begin{itemize}
 %\item  As suggested by the reviewer, we have added new experiments against alternative solutions in the revised version (see exp-5 of section 4.1). 
 
-\item test
+\item As suggested, we have added experiments of existing methods in Section 7.2 and Exp-1 of Section 7.3 to evaluate the effectiveness and efficiency of our model.
+\item We have added experiments related to partial materialization strategy in Exp-3 of Section 7.3.
+\item We have reviewed more related works and added discussion about limitations of all the mentioned existing works in Section 8.
+\item We have added brief discussion about applicability and limitation of our work in Section 9.
 
 \end{itemize}
 
@@ -38,17 +41,17 @@ The point-to-point responses are given below.
 \begin{Comments}
 The expression of motivation is not clearly. Does the limitation of static graph cube is it cannot support range queries or it only can support latest data?
 \end{Comments}
-\noindent \textbf{Response:} [todo]. The major limitation of static graph cube is that it cannot support temporal multidimensional networks. Static graph cube can only be built on static multidimensional networks, e.g., DBLP where temporal information of co-authorships is omitted. Consequently, static graph cube cannot support range queries since there is no temporal information in its dataset. Static graph cube cannot support latest data because its authors didn't consider that new edges may be added into the static networks. Temporal graph cube supports latest data because we will update the temporal networks and indexes when new edges are added.
+\noindent \textbf{Response:} The major limitation of static graph cube is that it cannot support temporal multidimensional networks. Static graph cube can only be built on static multidimensional networks, e.g., DBLP without temporal information of co-authorships. Consequently, static graph cube cannot support range queries since there is no temporal information in its dataset. Static graph cube cannot support latest data because its authors didn't consider that new edges may be added into the static networks. Temporal graph cube supports latest data because we will update the temporal networks and indexes when new edges are added.
 
 \begin{Comments}
 Authors should improve their writing. Especially the punctuation makes the definitions hard to be understood.
 \end{Comments}
-\noindent \textbf{Response:} test
+\noindent \textbf{Response:} Following your advice, we have tried to update some definitions by replacing sentences separated by punctuation with relatively complete sentences.
 
 \begin{Comments}
 Authors provide similarity of snapshots and two ratios in the Sec. 5. All of them are calculated based on the edgesâ€™ number. Why do you use similarity but not two ratios to proof the effectiveness?
 \end{Comments}
-\noindent \textbf{Response:} Actually we do use the two ratios to proof the effectiveness of the index. As in our experiments (see Table 6 of Section 7.3), we show the two ratios in the 5-th and 8-th column to proof the actual effectiveness of the index. Similarity of snapshots is the metric which has a strong correlation with the two ratios, so it is used to measure the necessity of building index for a materialized view. In detail, both theoretically and experimentally we find that larger similarity of snapshots in a materialized view leads to higher acceleration ratio and lower space consumption ratio of the index. If the value of similarity of snapshots in a view is as low as $ 1 $, then there is no need to build index for the view and the baseline method to conduct queries is the best method, as we analyzed in Section 5.
+\noindent \textbf{Response:} Actually we do use the two ratios to proof the effectiveness of the index. As in our experiments (see Table 6 of Section 7.3), we show the two ratios in the 5-th and 8-th column to proof the actual effectiveness of the index. Similarity of snapshots is the metric which has a strong correlation with the two ratios, so it is used to measure the necessity of building index for a materialized view. In detail, both theoretically and experimentally we find that larger similarity of snapshots in a materialized view leads to higher acceleration ratio and lower space consumption ratio of the index. If the value of similarity of snapshots in a view is as low as $ 1 $, then there is no need to build index for the view and the baseline method is the best method, as we analyzed in Section 5.
 %Acceleration ratio in Definition 7 and space consumption ratio in Definition 9 theoretically measure the query efficiency and space cost of the index respectively based on the edges' number. As in our experiments (see Table 6 of Section 7.3), we show the two ratios in the 5-th and 8-th column to proof the actual effectiveness of the index. However, both theoretically and experimentally we find that the query efficiency and space cost of the index are both related to a metric named 'similarity of snapshots' in the manuscript, as shown in Table 6. If the value of similarity of snapshot. To sum up, we do use the two ratios to proof the effectiveness of the index, and similarity of snapshots is used to 
 
 \begin{Comments}
@@ -72,26 +75,28 @@ The second parameter of MergeSnapshotExtre on Line 11, Algorithm 5 should be (uâ
 \begin{Comments}
 D1: The management of snapshots should be described with more details. According to Def. 2, the snapshot is defined with a single timestamps. It looks like that when an edge forms at timestamp t, it never disappears. How do we maintain an edge with time range from t1 to t2? Otherwise, the limitation or applicability of the proposed method should be discussed.
 \end{Comments}
-\noindent \textbf{Response:} It is reasonable for a temporal edge to have only one timestamp, because in many cases, durations or end time of temporal edges are meaningless. For example, DBLP only records date of publication of research papers. For a research paper, the end time of publication or existence is meaningless. We just need to focus on the fact that at a certain time, some researchers have published a certain paper. Given a time range $ [t_1,t_2] $, it's easy to determine whether a research paper is published in $ [t_1,t_2] $. It's the same with movies in IMDB. Another example is email communication network, which is also temporal network. Temporal edges in email communication network contain only timestamp of sending the email, and there is no need to store timestamp of finishing sending the email or timestamp of deleting the email. We just need to focus on the fact that there was an email exchange between certain people at a certain time, or we can consider this as an instant activity.
+\noindent \textbf{Response:} It is reasonable for a temporal edge to have only one timestamp, because in many cases, durations or end time of temporal edges are meaningless. For example, DBLP only records date of publication of research papers. For a research paper, the end time of publication or existence is meaningless. We just need to focus on the fact that at a certain time, some researchers have published a certain paper. Given a time range $ [t_1,t_2] $, we only need to determine whether a research paper is published in $ [t_1,t_2] $. It's the same with movies in IMDB. Another example is email communication network, which is also temporal network. Temporal edges in email communication network contain only timestamp of sending the email, and there is no need to store timestamp of finishing sending the email or timestamp of deleting the email. We just need to focus on the fact that there was an email exchange between certain people at a certain time, or we can consider this as an instant activity.
 
-The temporal edges you mentioned do exist in temporal networks, such as phone calls network, since each phone call lasts for a while. However,
+Besides our work, almost all related works reviewed in the revised version define temporal edges with only one timestamp. The temporal edges you mentioned do exist in some temporal networks, such as phone calls network, since each phone call lasts for a while. However, it is difficult to assign realistic meaning to some possible positional relationships between the interval of a temporal edge and interval specified in a query if aggregation function on edges $ f_e $ is COUNT($\ast$) (or SUM($\ast$), MAX($\ast$), MIN($\ast$)). Suppose $ (u,v,t_s,t_e) $ be a phone call between $ u,v $ which starts at $ t_s $ and ends at $ t_e $. Given a query $ [t_1,t_2] $ satisfying $ t_1<t_s<t_2<t_e $, it is hard to tell what the aggregation result of $ (u,v) $ is if $ f_e $ is COUNT($\ast$), not to mention that there may be numeric attribute in temporal edges and $ f_e $ is SUM($\ast$) (or other aggregation functions). There may be a reasonable scenario that $ f_e $ is Duration($\ast$), i.e., asking for the total time of connections between two vertices or two groups of vertices. But it's insufficient to only support Duration($\ast$).
+
+Overall, datasets containing temporal edges with single timestamp are common in our research field. The motivation of temporal graph cube based on temporal networks containing temporal edges with time range should be further discussed, which should be included in a new work. We have added brief discussion about applicability and limitation of our work in Section 9 of the revised version.
 
 \begin{Comments}
 D2: Following D1, in current experimental datasets, DBLP and IMDB, all edges with single timestamps. I suggest adding experiments with datasets which contain edges with time ranges.
 \end{Comments}
-\noindent \textbf{Response:} test
+\noindent \textbf{Response:} Thanks for your advice. As we have responsed in D1, the motivation of temporal graph cube based on temporal networks containing temporal edges with time range should be further discussed and it is better to be included in future new works.
 
 \begin{Comments}
 D3: The effectiveness of partial materialization is not verified in experiments.
 \end{Comments}
-\noindent \textbf{Response:} test
+\noindent \textbf{Response:} Thanks for reminding us. We have added relevant experiments in Exp-3 of Section 7.3.
 
 \section{Response to Reviewer \#3}
 \setcounter{Comments}{0}
 \begin{Comments}
 The experimental study only tests the proposed methods in this paper. I know the temporal graph cube is a novel problem studied in this paper, thus there is no existing algorithms/methods can direct handle it. However, is it possible to adapt some existing methods on graph summarizing, or static graph cube methods to handle the temporal graph cube problem as some baselines? Through comparing with modified existing methods can better show the advantages of the proposed methods.
 \end{Comments}
-\noindent \textbf{Response:} test
+\noindent \textbf{Response:} Thanks for your advice. We have added experiments in both Section 7.2 and Exp-1 of Section 7.3. Please refer to the response to comment 4 of reviewer \#1 for more details.
 
 
 \begin{Comments}
